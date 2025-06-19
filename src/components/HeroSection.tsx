@@ -29,7 +29,7 @@ export default function HeroSection() {
                 </p>
                 {/* Solid CTA */}
                 <Link
-                    href="/calculator"
+                    href="/pay"
                     className="inline-block px-8 py-3 font-semibold rounded-md shadow-md transition-shadow hover:shadow-lg"
                     style={{
                         backgroundColor: 'var(--color-olive)',
