@@ -1,15 +1,20 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+// app/layout.tsx
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+import type { Metadata } from "next";
+import { Poppins, Karla } from "next/font/google";
+import "./globals.css";
+import Navbar from "@/components/Navbar";
+
+const poppins = Poppins({
+  variable: "--font-sans",
   subsets: ["latin"],
+  weight: ["400", "600", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const karla = Karla({
+  variable: "--font-mono",
   subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
 export const metadata: Metadata = {
@@ -17,16 +22,11 @@ export const metadata: Metadata = {
   description: "Calculate hours worked and pay earned in real-time.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${poppins.variable} ${karla.variable} antialiased`}>
+        <Navbar />
         {children}
       </body>
     </html>
