@@ -1,10 +1,10 @@
 import Link from 'next/link';
-import { Star } from 'lucide-react';
+import { Logo } from './Logo';
 
 export default function HeroSection() {
     return (
         <section className="hero bg-primary text-white min-h-screen flex flex-col items-center justify-center px-4 text-center">
-            <Star className="w-16 h-16 mb-4 text-secondary" />
+            <Logo size={80} />
             <h1 className="text-5xl sm:text-6xl font-bold font-poppins mb-4">
                 Welcome to PayCalc
             </h1>

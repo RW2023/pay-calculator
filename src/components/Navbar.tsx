@@ -34,7 +34,7 @@ export default function Navbar() {
                     <Logo size={60} />
 
                     {/* Your brand name */}
-                    <span className="font-bold text-xl">WeeklyPay</span>
+                    <span className="font-bold text-xl">PayCalc</span>
                 </Link>
 
 
