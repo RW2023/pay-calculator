@@ -21,13 +21,14 @@ export default function Navbar() {
         <nav
             role="navigation"
             aria-label="Main menu"
-            className="sticky top-0 z-50 shadow-sm border-b transition-colors duration-300"
-            style={{
-                backgroundColor: 'var(--background)',
-                color: 'var(--foreground)',
-                borderColor: 'rgba(0,0,0,0.1)',
-            }}
-        >
+            className="
+          sticky top-0 z-50
+          shadow-sm
+          border-b border-[rgba(0,0,0,0.1)]
+          bg-[var(--background)] text-[var(--foreground)]
+          transition-colors duration-300
+        "
+      >
             <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-20">
                 {/* Brand / Logo */}
                 <Link href="/" className="flex items-center gap-2">
@@ -55,13 +56,13 @@ export default function Navbar() {
 
                 {/* Mobile menu button */}
                 <button
-                    title='Toggle mobile menu'
+                    title="Toggle mobile menu"
                     type="button"
-                    onClick={() => setMobileOpen((prev) => !prev)}
+                    onClick={() => setMobileOpen(prev => !prev)}
                     className="lg:hidden p-2"
                     aria-label="Toggle menu"
                     aria-controls="mobile-menu"
-                    aria-expanded={mobileOpen}
+                    aria-expanded={mobileOpen ? 'true' : 'false'}
                 >
                     {mobileOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
