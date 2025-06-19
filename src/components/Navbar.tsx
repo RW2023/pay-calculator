@@ -9,7 +9,7 @@ import {Logo} from '@/components/Logo'; // Assuming you have a Logo c
 
 const navItems = [
     { name: 'Home', href: '/' },
-    { name: 'Calculator', href: '/calculator' },
+    { name: 'Pay', href: '/pay' },
     { name: 'History', href: '/history' },
     { name: 'Settings', href: '/settings' },
 ];
