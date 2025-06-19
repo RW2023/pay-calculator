@@ -6,7 +6,7 @@ export default function HeroSection() {
     return (
         <section className="hero min-h-screen bg-primary text-white flex items-center justify-center px-4">
             <div className="max-w-2xl text-center space-y-6">
-                <Logo size={80} className="mx-auto" />
+                <Logo size={80}/>
                 <h1 className="text-[clamp(2.5rem,5vw,4rem)] font-extrabold font-poppins">
                     Welcome to PayCalc
                 </h1>
