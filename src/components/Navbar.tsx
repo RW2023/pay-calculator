@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
-import Image from 'next/image';
 import ThemeToggle from '@/components/ThemeToggle';
+import {Logo} from '@/components/Logo'; // Assuming you have a Logo c
 
 const navItems = [
     { name: 'Home', href: '/' },
@@ -31,15 +31,12 @@ export default function Navbar() {
             <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-20">
                 {/* Brand / Logo */}
                 <Link href="/" className="flex items-center gap-2">
-                    <Image
-                        src="/logo.png"
-                        alt="Weekly Pay Calculator Logo"
-                        width={40}
-                        height={40}
-                        className="h-10 w-10 object-contain rounded-full"
-                    />
+                    <Logo size={60} />
+
+                    {/* Your brand name */}
                     <span className="font-bold text-xl">WeeklyPay</span>
                 </Link>
+
 
                 {/* Desktop nav links */}
                 <div className="hidden lg:flex items-center space-x-6">
