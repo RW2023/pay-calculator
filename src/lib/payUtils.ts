@@ -1,18 +1,30 @@
 // lib/payUtils.ts
 
-// Utility to handle overnight shifts (e.g. 9pm–5:30am next day)
+// Robust utility to handle overnight shifts (e.g. 9pm–5:30am next day)
 export function calculateHours(start: string, end: string): number {
-    if (!start || !end) return 0;
-    const [startH, startM] = start.split(':').map(Number);
-    const [endH, endM] = end.split(':').map(Number);
+    if (!start || !end || !start.includes(':') || !end.includes(':')) return 0;
+  
+    const [startHRaw, startMRaw] = start?.split?.(':') ?? [];
+    const [endHRaw, endMRaw] = end?.split?.(':') ?? [];
+  
+    const safeNum = (n: unknown) => {
+      const x = Number(n);
+      return Number.isFinite(x) ? x : 0;
+    };
+  
+    const startH = safeNum(startHRaw);
+    const startM = safeNum(startMRaw);
+    const endH = safeNum(endHRaw);
+    const endM = safeNum(endMRaw);
+  
     const startTotal = startH + startM / 60;
     const endTotal = endH + endM / 60;
     let diff = endTotal - startTotal;
     if (diff < 0) diff += 24;
-    return Math.round(diff * 100) / 100;
+    return Math.max(0, Math.round(diff * 100) / 100);
   }
   
-  // Types for each day's input
+  // ---- Types for each day's input ----
   export interface DayEntry {
     startTime: string;  // "21:00"
     endTime: string;    // "05:30"
@@ -26,7 +38,7 @@ export function calculateHours(start: string, end: string): number {
     hasUnionDues: boolean;
   }
   
-  // Result type for each day (optional: display in results)
+  // Result type for each day
   export interface DayPay {
     day: string;
     hours: number;
@@ -51,10 +63,15 @@ export function calculateHours(start: string, end: string): number {
     };
   }
   
-  // Rates via env (with safe fallback)
-  const REGULAR_RATE = Number(process.env.REGULAR_RATE) || 25;
-  const PENSION_BIWEEKLY = Number(process.env.PENSION_BIWEEKLY) || 60;
-  const UNION_DUES_BIWEEKLY = Number(process.env.UNION_DUES_BIWEEKLY) || 40;
+  // Robust env var parsing (fallback if unset or not a number)
+  function safeEnvNum(name: string, fallback: number): number {
+    const val = Number(process.env[name]);
+    return Number.isFinite(val) && !Number.isNaN(val) ? val : fallback;
+  }
+  
+  const REGULAR_RATE = safeEnvNum('REGULAR_RATE', 25);
+  const PENSION_BIWEEKLY = safeEnvNum('PENSION_BIWEEKLY', 60);
+  const UNION_DUES_BIWEEKLY = safeEnvNum('UNION_DUES_BIWEEKLY', 40);
   
   export function calculateWeeklyPay(input: WeeklyPayInput): WeeklyPayResult {
     let regularPay = 0;
@@ -63,13 +80,15 @@ export function calculateHours(start: string, end: string): number {
     let totalHours = 0;
     let lieuDays = 0;
   
+    // Always use 7 days (pad with blanks if short)
     const daysOfWeek = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
   
-    const days: DayPay[] = input.days.map((d, i) => {
+    const days: DayPay[] = daysOfWeek.map((label, i) => {
+      const d = input.days[i] ?? { startTime: '', endTime: '', isHoliday: false };
       const hours = calculateHours(d.startTime, d.endTime);
       totalHours += hours;
       let dayRegular = 0, dayOvertime = 0, dayHoliday = 0;
-      let isHoliday = d.isHoliday;
+      const isHoliday = d.isHoliday;
       if (isHoliday && hours > 0) {
         // All hours at double-time-and-a-half
         dayHoliday = hours * REGULAR_RATE * 2.5;
@@ -83,7 +102,7 @@ export function calculateHours(start: string, end: string): number {
       overtimePay += dayOvertime;
       holidayPay += dayHoliday;
       return {
-        day: daysOfWeek[i],
+        day: label,
         hours,
         regularPay: dayRegular,
         overtimePay: dayOvertime,
