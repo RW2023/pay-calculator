@@ -10,6 +10,13 @@
   --foreground: #171717;
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
+
+  /* LHLS brand colors */
+  --color-olive: #7A9E00;
+  --color-teal: #008C85;
+  --color-teal-dark: #005F5A;
+  --color-neutral: #F2F2F2;
+  --color-neutral-dark: #333333;
 }
 
 @media (prefers-color-scheme: dark) {
