@@ -1,16 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import type { DayEntry } from '@/lib/payUtils'; // <-- adjust import path if needed
 
 const DAYS = [
     "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
 ];
-
-type DayEntry = {
-    startTime: string;
-    endTime: string;
-    isHoliday: boolean;
-};
 
 type WeeklyPayFormProps = {
     onSubmit: (values: {
@@ -23,9 +18,14 @@ type WeeklyPayFormProps = {
 export default function WeeklyPayForm({ onSubmit }: WeeklyPayFormProps) {
     const [days, setDays] = useState<DayEntry[]>(
         DAYS.map(() => ({
-            startTime: '',
-            endTime: '',
+            scheduledStart: '21:00',
+            scheduledEnd: '05:30',
+            actualStart: '',
+            actualEnd: '',
+            lunchTaken: true,
             isHoliday: false,
+            isBump: false,
+            lieuHoursUsed: 0,
         }))
     );
     const [hasPension, setHasPension] = useState(true);
@@ -41,78 +41,172 @@ export default function WeeklyPayForm({ onSubmit }: WeeklyPayFormProps) {
             aria-label="Weekly Pay Input Form"
         >
             <div className="overflow-x-auto">
-                <table className="table w-full min-w-[600px]">
+                <table className="table w-full min-w-[1050px]">
                     <thead>
                         <tr>
-                            <th className="text-left">Day</th>
-                            <th className="text-left">Start Time</th>
-                            <th className="text-left">End Time</th>
-                            <th className="text-left">Holiday?</th>
+                            <th>Day</th>
+                            <th>Sched. Start</th>
+                            <th>Sched. End</th>
+                            <th>Actual Start</th>
+                            <th>Actual End</th>
+                            <th>Lunch?</th>
+                            <th>Holiday?</th>
+                            <th>BUMP?</th>
+                            <th>Lieu Used (hrs)</th>
                         </tr>
                     </thead>
                     <tbody>
                         {DAYS.map((label, idx) => {
-                            const day = days[idx] ?? { startTime: '', endTime: '', isHoliday: false };
+                            const day = days[idx] ?? {
+                                scheduledStart: '',
+                                scheduledEnd: '',
+                                actualStart: '',
+                                actualEnd: '',
+                                lunchTaken: true,
+                                isHoliday: false,
+                                isBump: false,
+                                lieuHoursUsed: 0,
+                            };
                             return (
                                 <tr key={label}>
                                     <td className="font-semibold">{label}</td>
                                     <td>
-                                        <label htmlFor={`start-${label}`} className="sr-only">
-                                            {label} Start Time
-                                        </label>
                                         <input
-                                            id={`start-${label}`}
+                                        title='Scheduled Start Time'
                                             type="time"
                                             className="input input-bordered w-full"
-                                            value={day.startTime}
-                                            placeholder="Start"
-                                            title={`${label} Start Time`}
+                                            value={day?.scheduledStart ?? ''}
                                             onChange={e =>
                                                 setDays(prev =>
                                                     prev.map((d, i) =>
-                                                        i === idx ? { ...d, startTime: e.target.value } : d
+                                                        i === idx
+                                                            ? { ...d, scheduledStart: e.target.value }
+                                                            : d
                                                     )
                                                 )
                                             }
                                         />
                                     </td>
                                     <td>
-                                        <label htmlFor={`end-${label}`} className="sr-only">
-                                            {label} End Time
-                                        </label>
                                         <input
-                                            id={`end-${label}`}
+                                        title='Scheduled End Time'
                                             type="time"
                                             className="input input-bordered w-full"
-                                            value={day.endTime}
-                                            placeholder="End"
-                                            title={`${label} End Time`}
+                                            value={day?.scheduledEnd ?? ''}
                                             onChange={e =>
                                                 setDays(prev =>
                                                     prev.map((d, i) =>
-                                                        i === idx ? { ...d, endTime: e.target.value } : d
+                                                        i === idx
+                                                            ? { ...d, scheduledEnd: e.target.value }
+                                                            : d
                                                     )
                                                 )
                                             }
                                         />
                                     </td>
                                     <td>
-                                        <label htmlFor={`holiday-${label}`} className="sr-only">
-                                            {label} Holiday
-                                        </label>
                                         <input
-                                            id={`holiday-${label}`}
+                                            type="time"
+                                            className="input input-bordered w-full"
+                                            value={day?.actualStart ?? ''}
+                                            onChange={e =>
+                                                setDays(prev =>
+                                                    prev.map((d, i) =>
+                                                        i === idx
+                                                            ? { ...d, actualStart: e.target.value }
+                                                            : d
+                                                    )
+                                                )
+                                            }
+                                            placeholder="--:--"
+                                        />
+                                    </td>
+                                    <td>
+                                        <input
+                                            type="time"
+                                            className="input input-bordered w-full"
+                                            value={day?.actualEnd ?? ''}
+                                            onChange={e =>
+                                                setDays(prev =>
+                                                    prev.map((d, i) =>
+                                                        i === idx
+                                                            ? { ...d, actualEnd: e.target.value }
+                                                            : d
+                                                    )
+                                                )
+                                            }
+                                            placeholder="--:--"
+                                        />
+                                    </td>
+                                    <td>
+                                        <input
+                                            type="checkbox"
+                                            className="toggle toggle-info"
+                                            checked={day.lunchTaken}
+                                            onChange={e =>
+                                                setDays(prev =>
+                                                    prev.map((d, i) =>
+                                                        i === idx
+                                                            ? { ...d, lunchTaken: e.target.checked }
+                                                            : d
+                                                    )
+                                                )
+                                            }
+                                            title="Lunch taken (deduct 0.5h)"
+                                        />
+                                    </td>
+                                    <td>
+                                        <input
                                             type="checkbox"
                                             className="toggle toggle-success"
                                             checked={day.isHoliday}
-                                            title={`${label} is Holiday`}
                                             onChange={e =>
                                                 setDays(prev =>
                                                     prev.map((d, i) =>
-                                                        i === idx ? { ...d, isHoliday: e.target.checked } : d
+                                                        i === idx
+                                                            ? { ...d, isHoliday: e.target.checked }
+                                                            : d
                                                     )
                                                 )
                                             }
+                                            title="Holiday (time & half + Lieu day)"
+                                        />
+                                    </td>
+                                    <td>
+                                        <input
+                                            type="checkbox"
+                                            className="toggle toggle-warning"
+                                            checked={day.isBump}
+                                            onChange={e =>
+                                                setDays(prev =>
+                                                    prev.map((d, i) =>
+                                                        i === idx
+                                                            ? { ...d, isBump: e.target.checked }
+                                                            : d
+                                                    )
+                                                )
+                                            }
+                                            title="BUMP (pay to full scheduled shift if ended early)"
+                                        />
+                                    </td>
+                                    <td>
+                                        <input
+                                            type="number"
+                                            className="input input-bordered w-16"
+                                            min={0}
+                                            max={8}
+                                            step={0.25}
+                                            value={day.lieuHoursUsed}
+                                            onChange={e =>
+                                                setDays(prev =>
+                                                    prev.map((d, i) =>
+                                                        i === idx
+                                                            ? { ...d, lieuHoursUsed: Math.max(0, Number(e.target.value) || 0) }
+                                                            : d
+                                                    )
+                                                )
+                                            }
+                                            title="Lieu/Sick Hours Used"
                                         />
                                     </td>
                                 </tr>
@@ -123,25 +217,21 @@ export default function WeeklyPayForm({ onSubmit }: WeeklyPayFormProps) {
             </div>
             {/* Deductions toggles */}
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-                <label className="flex items-center gap-2 font-medium" htmlFor="pension-toggle">
+                <label className="flex items-center gap-2 font-medium">
                     <input
-                        id="pension-toggle"
                         type="checkbox"
                         className="toggle toggle-info"
                         checked={hasPension}
                         onChange={e => setHasPension(e.target.checked)}
-                        title="Apply Pension Deduction"
                     />
-                    Pension Deduction
+                    Pension
                 </label>
-                <label className="flex items-center gap-2 font-medium" htmlFor="union-toggle">
+                <label className="flex items-center gap-2 font-medium">
                     <input
-                        id="union-toggle"
                         type="checkbox"
                         className="toggle toggle-warning"
                         checked={hasUnionDues}
                         onChange={e => setHasUnionDues(e.target.checked)}
-                        title="Apply Union Dues"
                     />
                     Union Dues
                 </label>
