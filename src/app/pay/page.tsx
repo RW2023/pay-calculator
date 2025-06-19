@@ -3,13 +3,13 @@
 import { useState } from 'react';
 import WeeklyPayForm from '@/components/WeeklyPayForm';
 import ResultsDisplay from '@/components/ResultsDisplay';
-import { calculatePay, PayInput, PayResult } from '@/lib/payUtils';
+import { calculateWeeklyPay, WeeklyPayInput, WeeklyPayResult } from '@/lib/payUtils';
 
 export default function PayCalculatorPage() {
-    const [result, setResult] = useState<PayResult | null>(null);
+    const [result, setResult] = useState<WeeklyPayResult | null>(null);
 
-    const handleFormSubmit = (values: PayInput) => {
-        setResult(calculatePay(values));
+    const handleFormSubmit = (values: WeeklyPayInput) => {
+        setResult(calculateWeeklyPay(values));
     };
 
     return (
