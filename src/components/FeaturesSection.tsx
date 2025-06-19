@@ -9,23 +9,19 @@ const features = [
 
 export default function FeaturesSection() {
     return (
-        <section className="py-20 bg-base-100">
+        <section className="py-20 w-full bg-[var(--color-neutral)] text-[var(--color-neutral-dark)] dark:bg-[var(--color-neutral-dark)] dark:text-[var(--color-neutral)] transition-colors">
             <div className="mx-auto max-w-6xl px-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                     {features.map(({ icon: Icon, title, desc }) => (
                         <div
                             key={title}
-                            className="card border border-base-200 rounded-2xl shadow-sm hover:shadow-lg transition p-6 bg-base-100"
+                            className="border border-[var(--color-teal)] rounded-2xl shadow-sm hover:shadow-lg transition p-6 bg-[var(--background)] text-[var(--foreground)]"
                         >
                             <div className="flex items-center justify-center mb-4">
-                                <Icon className="w-12 h-12 text-primary" />
+                                <Icon className="w-12 h-12" style={{ color: "var(--color-olive)" }} />
                             </div>
-                            <h3 className="text-xl font-semibold mb-2 text-base-content">
-                                {title}
-                            </h3>
-                            <p className="text-base-content opacity-80">
-                                {desc}
-                            </p>
+                            <h3 className="text-xl font-semibold mb-2">{title}</h3>
+                            <p className="opacity-80">{desc}</p>
                         </div>
                     ))}
                 </div>

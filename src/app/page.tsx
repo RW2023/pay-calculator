@@ -5,7 +5,7 @@ import HowItWorksSection from '@/components/HowItWorksSection';
 
 export default function HomePage() {
   return (
-    <main className="flex flex-col items-center bg-base-100 text-base-content">
+    <main className="flex flex-col items-center w-full min-h-screen bg-[var(--background)] text-[var(--foreground)]">
       <HeroSection />
       <FeaturesSection />
       <HowItWorksSection />
