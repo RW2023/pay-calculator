@@ -83,12 +83,12 @@ function getEnvNumber(key: string, fallback: number): number {
 }
 
 // --- Constants for rates (all from env!) ---
+// These will only be resolved server-side, never client-side
 const REGULAR_RATE = getEnvNumber("REGULAR_RATE", 32.5);
 const OVERTIME_RATE = REGULAR_RATE * 1.5;
 const HOLIDAY_RATE = REGULAR_RATE * 1.5;
 
 const PENSION_BIWEEKLY = getEnvNumber("PENSION_BIWEEKLY", 103.79);
-// Use full weekly amount for union dues (do not divide by 2)
 const UNION_DUES_WEEKLY = getEnvNumber("UNION_DUES_WEEKLY", 98);
 
 const EI_RATE = 0.0166;
