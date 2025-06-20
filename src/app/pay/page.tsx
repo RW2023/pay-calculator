@@ -1,15 +1,20 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import WeeklyPayForm from '@/components/WeeklyPayForm';
 import ResultsDisplay from '@/components/ResultsDisplay';
-import { calculateWeeklyPay, WeeklyPayInput, WeeklyPayResult } from '@/lib/payUtils';
+import type { WeeklyPayInput, WeeklyPayResult } from '@/lib/payUtils';
+import { calculatePayAction } from '@/app/actions/calculatePay';
 
 export default function PayCalculatorPage() {
     const [result, setResult] = useState<WeeklyPayResult | null>(null);
+    const [pending, startTransition] = useTransition();
 
     const handleFormSubmit = (values: WeeklyPayInput) => {
-        setResult(calculateWeeklyPay(values));
+        startTransition(async () => {
+            const res = await calculatePayAction(values);
+            setResult(res);
+        });
     };
 
     return (
@@ -18,6 +23,7 @@ export default function PayCalculatorPage() {
                 Weekly Pay Calculator
             </h1>
             <WeeklyPayForm onSubmit={handleFormSubmit} />
+            {pending && <div className="text-center text-gray-500">Calculating...</div>}
             {result && <ResultsDisplay result={result} />}
         </main>
     );
