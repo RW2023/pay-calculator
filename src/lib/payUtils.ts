@@ -68,7 +68,7 @@ export function calculateHours(start: string, end: string): number {
 }
 
 // --- Constants for rates (2024, Ontario Canada, or user provided) ---
-export const REGULAR_RATE = parseFloat(process.env.REGULAR_RATE ?? "0"); //update environment variable as needed
+const REGULAR_RATE = 32.50;
 const OVERTIME_RATE = REGULAR_RATE * 1.5;
 const HOLIDAY_RATE = REGULAR_RATE * 1.5;
 
@@ -160,7 +160,7 @@ export function calculateWeeklyPay(input: WeeklyPayInput): WeeklyPayResult {
     });
 
     const pensionDeducted = input.hasPension ? Number((PENSION_BIWEEKLY / 2).toFixed(2)) : 0;
-    const unionDuesDeducted = input.hasUnionDues ? Number(UNION_DUES_BIWEEKLY.toFixed(2)) : 0;
+const unionDuesDeducted = input.hasUnionDues ? Number(UNION_DUES_BIWEEKLY.toFixed(2)) : 0;
 
     const grossPay = regularPay + overtimePay + holidayPay + lieuPay + bumpPay;
 
