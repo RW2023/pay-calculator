@@ -21,6 +21,12 @@ const karla = Karla({
 export const metadata: Metadata = {
   title: "Pay Calculator",
   description: "Calculate hours worked and pay earned in real-time.",
+  manifest: "/manifest.json",
+  icons: {
+    icon: "/favicon-32x32.png",
+    apple: "/apple-touch-icon.png",
+    shortcut: "/favicon.ico",
+  },
 };
 
 
