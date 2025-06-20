@@ -67,17 +67,33 @@ export function calculateHours(start: string, end: string): number {
     return Math.max(0, Math.round(diff * 100) / 100);
 }
 
-// --- Constants for rates (2024, Ontario Canada, or user provided) ---
-const REGULAR_RATE = 32.50;
+// --- Helper for getting numbers from env safely ---
+function getEnvNumber(key: string, fallback: number): number {
+    const raw = process.env[key];
+    const val = raw !== undefined ? Number(raw) : NaN;
+    if (!Number.isFinite(val) || val <= 0) {
+        if (process.env.NODE_ENV !== "production") {
+            console.warn(`[payUtils] Env var ${key} missing or invalid, using fallback: ${fallback}`);
+            return fallback;
+        } else {
+            throw new Error(`[payUtils] Env var ${key} missing or invalid!`);
+        }
+    }
+    return val;
+}
+
+// --- Constants for rates (all from env!) ---
+const REGULAR_RATE = getEnvNumber("REGULAR_RATE", 32.5);
 const OVERTIME_RATE = REGULAR_RATE * 1.5;
 const HOLIDAY_RATE = REGULAR_RATE * 1.5;
 
-const PENSION_BIWEEKLY = 103.79;
-const UNION_DUES_BIWEEKLY = 98;
+const PENSION_BIWEEKLY = getEnvNumber("PENSION_BIWEEKLY", 103.79);
+// Use full weekly amount for union dues (do not divide by 2)
+const UNION_DUES_WEEKLY = getEnvNumber("UNION_DUES_WEEKLY", 98);
 
 const EI_RATE = 0.0166;
 const CPP_RATE = 0.0595;
-const TAX_RATE_EST = 0.20; // Rough estimate for simplicity
+const TAX_RATE_EST = 0.20;
 
 // --- Main calculation ---
 export function calculateWeeklyPay(input: WeeklyPayInput): WeeklyPayResult {
@@ -122,7 +138,6 @@ export function calculateWeeklyPay(input: WeeklyPayInput): WeeklyPayResult {
         if (d.isHoliday && paidHours > 0) {
             dayHolidayPay = Number((paidHours * HOLIDAY_RATE).toFixed(2));
             dayLieuDaysAccrued = 1;
-            // No bump on holidays
         }
         else if (d.isBump && hoursWorked < scheduledShift) {
             // Pay for scheduled shift (minus lunch if taken)
@@ -160,7 +175,7 @@ export function calculateWeeklyPay(input: WeeklyPayInput): WeeklyPayResult {
     });
 
     const pensionDeducted = input.hasPension ? Number((PENSION_BIWEEKLY / 2).toFixed(2)) : 0;
-const unionDuesDeducted = input.hasUnionDues ? Number(UNION_DUES_BIWEEKLY.toFixed(2)) : 0;
+    const unionDuesDeducted = input.hasUnionDues ? Number(UNION_DUES_WEEKLY.toFixed(2)) : 0;
 
     const grossPay = regularPay + overtimePay + holidayPay + lieuPay + bumpPay;
 
@@ -168,7 +183,8 @@ const unionDuesDeducted = input.hasUnionDues ? Number(UNION_DUES_BIWEEKLY.toFixe
     const ei = Number((EI_RATE * grossPay).toFixed(2));
     const cpp = Number((CPP_RATE * grossPay).toFixed(2));
 
-    const netPay = Number((grossPay - pensionDeducted - unionDuesDeducted - federalTax - ei - cpp).toFixed(2));
+    // Never allow negative net pay
+    const netPay = Math.max(0, Number((grossPay - pensionDeducted - unionDuesDeducted - federalTax - ei - cpp).toFixed(2)));
 
     return {
         days,
