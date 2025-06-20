@@ -30,7 +30,7 @@ export default function ResultsDisplay({ result }: ResultsDisplayProps) {
         <section className="w-full mt-4 space-y-6">
             {/* Earnings Breakdown */}
             <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-                {payRows.map((r, i) => (
+                {payRows.map((r) => (
                     <div
                         key={r.label}
                         className={`card bg-base-100 shadow rounded-xl p-4 border-l-4 ${r.border}`}
