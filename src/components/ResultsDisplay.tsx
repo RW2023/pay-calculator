@@ -1,3 +1,5 @@
+// components/ResultsDisplay.tsx
+import { forwardRef } from "react";
 import { CheckCircle2, BadgeDollarSign, ReceiptText } from "lucide-react";
 import type { WeeklyPayResult } from "@/lib/payUtils";
 
@@ -5,7 +7,7 @@ interface ResultsDisplayProps {
     result: WeeklyPayResult;
 }
 
-export default function ResultsDisplay({ result }: ResultsDisplayProps) {
+const ResultsDisplay = forwardRef<HTMLDivElement, ResultsDisplayProps>(({ result }, ref) => {
     const t = result.totals;
 
     // Helper: only show rows for positive values
@@ -27,7 +29,7 @@ export default function ResultsDisplay({ result }: ResultsDisplayProps) {
     ].filter(r => r.value && Math.abs(r.value) > 0.009);
 
     return (
-        <section className="w-full mt-4 space-y-6">
+        <section ref={ref} className="w-full mt-4 space-y-6">
             {/* Earnings Breakdown */}
             <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
                 {payRows.map((r) => (
@@ -94,4 +96,6 @@ export default function ResultsDisplay({ result }: ResultsDisplayProps) {
             </div>
         </section>
     );
-}
+});
+ResultsDisplay.displayName = "ResultsDisplay";
+export default ResultsDisplay;

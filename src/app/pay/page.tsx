@@ -1,14 +1,16 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useRef, useState, useTransition } from 'react';
 import WeeklyPayForm from '@/components/WeeklyPayForm';
 import ResultsDisplay from '@/components/ResultsDisplay';
+import PrintButton from '@/components/PrintButton';
 import type { WeeklyPayInput, WeeklyPayResult } from '@/lib/payUtils';
 import { calculatePayAction } from '@/app/actions/calculatePay';
 
 export default function PayCalculatorPage() {
     const [result, setResult] = useState<WeeklyPayResult | null>(null);
     const [pending, startTransition] = useTransition();
+    const resultsRef = useRef<HTMLDivElement>(null);
 
     const handleFormSubmit = (values: WeeklyPayInput) => {
         startTransition(async () => {
@@ -24,7 +26,14 @@ export default function PayCalculatorPage() {
             </h1>
             <WeeklyPayForm onSubmit={handleFormSubmit} />
             {pending && <div className="text-center text-gray-500">Calculating...</div>}
-            {result && <ResultsDisplay result={result} />}
+            {result && (
+                <section className="w-full mt-4 space-y-4">
+                    <div className="flex justify-end">
+                        <PrintButton targetRef={resultsRef} />
+                    </div>
+                    <ResultsDisplay ref={resultsRef} result={result} />
+                </section>
+            )}
         </main>
     );
 }
