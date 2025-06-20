@@ -6,60 +6,47 @@ interface ResultsDisplayProps {
 }
 
 export default function ResultsDisplay({ result }: ResultsDisplayProps) {
-    const t = result.totals; // shortcut
+    const t = result.totals;
+
+    // Helper: only show rows for positive values
+    const payRows = [
+        { label: "Regular Pay", value: t.regularPay, color: "text-[var(--color-olive)]", border: "border-[var(--color-olive)]" },
+        { label: "Overtime Pay", value: t.overtimePay, color: "text-[var(--color-teal)]", border: "border-[var(--color-teal)]" },
+        { label: "Holiday Pay", value: t.holidayPay, color: "text-yellow-500", border: "border-yellow-500" },
+        { label: "Lieu (Sick/Leu) Pay", value: t.lieuPay, color: "text-blue-500", border: "border-blue-500" },
+        { label: "BUMP Pay", value: t.bumpPay, color: "text-purple-500", border: "border-purple-500" },
+        { label: "Gross Pay", value: t.grossPay, color: "text-gray-500", border: "border-gray-400" }
+    ].filter(r => r.value && Math.abs(r.value) > 0.009); // Hide zeroes
+
+    const deductionRows = [
+        { label: "Tax", value: t.federalTax, color: "text-rose-700" },
+        { label: "EI", value: t.ei, color: "text-sky-600" },
+        { label: "CPP", value: t.cpp, color: "text-indigo-600" },
+        { label: "Pension", value: t.pensionDeducted, color: "text-[var(--color-teal-dark)]" },
+        { label: "Union Dues", value: t.unionDuesDeducted, color: "text-[var(--color-teal-dark)]" }
+    ].filter(r => r.value && Math.abs(r.value) > 0.009);
 
     return (
         <section className="w-full mt-4 space-y-6">
             {/* Earnings Breakdown */}
             <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-                {/* Regular Pay */}
-                <div className="card bg-base-100 shadow rounded-xl p-4 border-l-4 border-[var(--color-olive)]">
-                    <div className="font-semibold text-lg text-[var(--color-olive)] flex items-center gap-2">
-                        Regular Pay
+                {payRows.map((r, i) => (
+                    <div
+                        key={r.label}
+                        className={`card bg-base-100 shadow rounded-xl p-4 border-l-4 ${r.border}`}
+                    >
+                        <div className={`font-semibold text-lg ${r.color} flex items-center gap-2`}>
+                            {r.label}
+                            {r.label === "Holiday Pay" && (t.lieuDaysAccrued ?? 0) > 0 && (
+                                <span className="badge badge-warning text-xs ml-2">
+                                    <CheckCircle2 className="w-3 h-3 mr-1" />
+                                    Lieu Day{t.lieuDaysAccrued > 1 ? "s" : ""} Accrued ({t.lieuDaysAccrued})
+                                </span>
+                            )}
+                        </div>
+                        <div className="text-2xl font-bold">${(r.value ?? 0).toFixed(2)}</div>
                     </div>
-                    <div className="text-2xl font-bold">${(t.regularPay ?? 0).toFixed(2)}</div>
-                </div>
-                {/* Overtime Pay */}
-                <div className="card bg-base-100 shadow rounded-xl p-4 border-l-4 border-[var(--color-teal)]">
-                    <div className="font-semibold text-lg text-[var(--color-teal)] flex items-center gap-2">
-                        Overtime Pay
-                    </div>
-                    <div className="text-2xl font-bold">${(t.overtimePay ?? 0).toFixed(2)}</div>
-                </div>
-                {/* Holiday Pay */}
-                <div className="card bg-base-100 shadow rounded-xl p-4 border-l-4 border-yellow-500">
-                    <div className="font-semibold text-lg text-yellow-500 flex items-center gap-2">
-                        Holiday Pay
-                        {(t.lieuDaysAccrued ?? 0) > 0 && (
-                            <span className="badge badge-warning text-xs ml-2">
-                                <CheckCircle2 className="w-3 h-3 mr-1" />
-                                Lieu Day{t.lieuDaysAccrued > 1 ? "s" : ""} Accrued ({t.lieuDaysAccrued})
-                            </span>
-                        )}
-                    </div>
-                    <div className="text-2xl font-bold">${(t.holidayPay ?? 0).toFixed(2)}</div>
-                </div>
-                {/* Lieu (Sick/Leu) Pay */}
-                <div className="card bg-base-100 shadow rounded-xl p-4 border-l-4 border-blue-500">
-                    <div className="font-semibold text-lg text-blue-500 flex items-center gap-2">
-                        Lieu (Sick/Leu) Pay
-                    </div>
-                    <div className="text-2xl font-bold">${(t.lieuPay ?? 0).toFixed(2)}</div>
-                </div>
-                {/* BUMP Pay */}
-                <div className="card bg-base-100 shadow rounded-xl p-4 border-l-4 border-purple-500">
-                    <div className="font-semibold text-lg text-purple-500 flex items-center gap-2">
-                        BUMP Pay
-                    </div>
-                    <div className="text-2xl font-bold">${(t.bumpPay ?? 0).toFixed(2)}</div>
-                </div>
-                {/* Gross Pay */}
-                <div className="card bg-base-100 shadow rounded-xl p-4 border-l-4 border-gray-400">
-                    <div className="font-semibold text-lg text-gray-500 flex items-center gap-2">
-                        Gross Pay
-                    </div>
-                    <div className="text-2xl font-bold">${(t.grossPay ?? 0).toFixed(2)}</div>
-                </div>
+                ))}
             </div>
 
             {/* Deductions */}
@@ -68,21 +55,11 @@ export default function ResultsDisplay({ result }: ResultsDisplayProps) {
                     <ReceiptText className="w-5 h-5" /> Deductions
                 </div>
                 <ul className="mt-1 text-base space-y-1">
-                    <li>
-                        Tax: <span className="font-bold text-rose-700">${(t.federalTax ?? 0).toFixed(2)}</span>
-                    </li>
-                    <li>
-                        EI: <span className="font-bold text-sky-600">${(t.ei ?? 0).toFixed(2)}</span>
-                    </li>
-                    <li>
-                        CPP: <span className="font-bold text-indigo-600">${(t.cpp ?? 0).toFixed(2)}</span>
-                    </li>
-                    <li>
-                        Pension: <span className="font-bold text-[var(--color-teal-dark)]">${(t.pensionDeducted ?? 0).toFixed(2)}</span>
-                    </li>
-                    <li>
-                        Union Dues: <span className="font-bold text-[var(--color-teal-dark)]">${(t.unionDuesDeducted ?? 0).toFixed(2)}</span>
-                    </li>
+                    {deductionRows.map(r => (
+                        <li key={r.label}>
+                            {r.label}: <span className={`font-bold ${r.color}`}>${(r.value ?? 0).toFixed(2)}</span>
+                        </li>
+                    ))}
                 </ul>
             </div>
 
@@ -106,10 +83,12 @@ export default function ResultsDisplay({ result }: ResultsDisplayProps) {
                             <span className="font-semibold">Total Hours Paid:</span>{" "}
                             <span>{(t.totalHours ?? 0).toFixed(2)} hrs</span>
                         </li>
-                        <li>
-                            <span className="font-semibold">Lieu Days Accrued:</span>{" "}
-                            <span>{t.lieuDaysAccrued ?? 0}</span>
-                        </li>
+                        {t.lieuDaysAccrued > 0 && (
+                            <li>
+                                <span className="font-semibold">Lieu Days Accrued:</span>{" "}
+                                <span>{t.lieuDaysAccrued ?? 0}</span>
+                            </li>
+                        )}
                     </ul>
                 </div>
             </div>

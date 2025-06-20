@@ -1,5 +1,3 @@
-// lib/payUtils.ts
-
 // ---- Types ----
 export interface DayEntry {
     scheduledStart: string;
@@ -53,7 +51,6 @@ export interface WeeklyPayResult {
 }
 
 // --- Calculation helpers ---
-// Safely parse time like "21:00" to float, never NaN/undefined.
 function parseTime(str: string): number {
     if (!str || typeof str !== "string" || !str.includes(":")) return 0;
     const [h, m] = str.split(":");
@@ -62,7 +59,6 @@ function parseTime(str: string): number {
     return (Number.isFinite(hours) ? hours : 0) + (Number.isFinite(mins) ? mins : 0) / 60;
 }
 
-// Calculate duration between times, handling overnight shifts.
 export function calculateHours(start: string, end: string): number {
     const startTotal = parseTime(start);
     const endTotal = parseTime(end);
@@ -72,7 +68,7 @@ export function calculateHours(start: string, end: string): number {
 }
 
 // --- Constants for rates (2024, Ontario Canada, or user provided) ---
-const REGULAR_RATE = 32.50; // Your base hourly rate
+const REGULAR_RATE = 32.50;
 const OVERTIME_RATE = REGULAR_RATE * 1.5;
 const HOLIDAY_RATE = REGULAR_RATE * 1.5;
 
@@ -81,7 +77,7 @@ const UNION_DUES_BIWEEKLY = 98;
 
 const EI_RATE = 0.0166;
 const CPP_RATE = 0.0595;
-const TAX_RATE_EST = 0.20; // Estimate for most weekly payslips (federal+provincial, varies in reality!)
+const TAX_RATE_EST = 0.20; // Rough estimate for simplicity
 
 // --- Main calculation ---
 export function calculateWeeklyPay(input: WeeklyPayInput): WeeklyPayResult {
@@ -107,35 +103,37 @@ export function calculateWeeklyPay(input: WeeklyPayInput): WeeklyPayResult {
             lieuHoursUsed: 0,
         };
 
+        // Subtract lunch from both actual and scheduled shift
         let hoursWorked = (d.actualStart && d.actualEnd)
             ? calculateHours(d.actualStart, d.actualEnd)
             : 0;
         if (d.lunchTaken) hoursWorked = Math.max(0, hoursWorked - 0.5);
 
-        const scheduledShift = calculateHours(d.scheduledStart, d.scheduledEnd);
+        let scheduledShift = calculateHours(d.scheduledStart, d.scheduledEnd);
+        if (d.lunchTaken) scheduledShift = Math.max(0, scheduledShift - 0.5);
 
-        // BUMP: pay up to scheduled if finished early
-        let bumpHours = 0;
+        // Initialize all day payouts
         let paidHours = hoursWorked;
-        if (d.isBump && hoursWorked < scheduledShift) {
-            bumpHours = scheduledShift - hoursWorked;
-            paidHours = scheduledShift;
-        }
-
-        // Lieu payout
+        let dayRegularPay = 0, dayOvertimePay = 0, dayHolidayPay = 0, dayBumpPay = 0;
         const dayLieuPay = Number((d.lieuHoursUsed * REGULAR_RATE).toFixed(2));
-
-        // Holiday (all paid hours at holiday rate, accrue 1 lieu day)
-        let dayHolidayPay = 0, dayRegularPay = 0, dayOvertimePay = 0, dayBumpPay = 0;
         let dayLieuDaysAccrued = 0;
+
+        // Holiday takes precedence over bump (if both toggled)
         if (d.isHoliday && paidHours > 0) {
             dayHolidayPay = Number((paidHours * HOLIDAY_RATE).toFixed(2));
             dayLieuDaysAccrued = 1;
-        } else {
-            // Regular & overtime split
-            dayRegularPay = Number((Math.min(paidHours, 8) * REGULAR_RATE).toFixed(2));
-            dayOvertimePay = Number((Math.max(paidHours - 8, 0) * OVERTIME_RATE).toFixed(2));
-            if (bumpHours > 0) dayBumpPay = Number((bumpHours * REGULAR_RATE).toFixed(2));
+            // No bump on holidays
+        }
+        else if (d.isBump && hoursWorked < scheduledShift) {
+            // Pay for scheduled shift (minus lunch if taken)
+            paidHours = scheduledShift;
+            dayRegularPay = Number((hoursWorked * REGULAR_RATE).toFixed(2));
+            dayBumpPay = Number(((scheduledShift - hoursWorked) * REGULAR_RATE).toFixed(2));
+        }
+        else {
+            // No bump or holiday: regular + overtime
+            dayRegularPay = Number((Math.min(hoursWorked, 8) * REGULAR_RATE).toFixed(2));
+            dayOvertimePay = Number((Math.max(hoursWorked - 8, 0) * OVERTIME_RATE).toFixed(2));
         }
 
         regularPay += dayRegularPay;
