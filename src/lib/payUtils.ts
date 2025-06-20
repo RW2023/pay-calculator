@@ -68,7 +68,7 @@ export function calculateHours(start: string, end: string): number {
 }
 
 // --- Constants for rates (2024, Ontario Canada, or user provided) ---
-const REGULAR_RATE = 32.50;
+export const REGULAR_RATE = parseFloat(process.env.REGULAR_RATE ?? "0");
 const OVERTIME_RATE = REGULAR_RATE * 1.5;
 const HOLIDAY_RATE = REGULAR_RATE * 1.5;
 
