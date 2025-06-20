@@ -77,7 +77,7 @@ const OVERTIME_RATE = REGULAR_RATE * 1.5;
 const HOLIDAY_RATE = REGULAR_RATE * 1.5;
 
 const PENSION_BIWEEKLY = 103.79;
-const UNION_DUES_BIWEEKLY = 0; // Update if your union takes dues
+const UNION_DUES_BIWEEKLY = 98;
 
 const EI_RATE = 0.0166;
 const CPP_RATE = 0.0595;
