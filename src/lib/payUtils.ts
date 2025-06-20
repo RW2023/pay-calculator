@@ -160,7 +160,7 @@ export function calculateWeeklyPay(input: WeeklyPayInput): WeeklyPayResult {
     });
 
     const pensionDeducted = input.hasPension ? Number((PENSION_BIWEEKLY / 2).toFixed(2)) : 0;
-    const unionDuesDeducted = input.hasUnionDues ? Number((UNION_DUES_BIWEEKLY / 2).toFixed(2)) : 0;
+    const unionDuesDeducted = input.hasUnionDues ? Number(UNION_DUES_BIWEEKLY.toFixed(2)) : 0;
 
     const grossPay = regularPay + overtimePay + holidayPay + lieuPay + bumpPay;
 
