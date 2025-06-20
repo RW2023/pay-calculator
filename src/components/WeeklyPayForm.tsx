@@ -4,7 +4,7 @@ import { useState } from 'react';
 import type { DayEntry } from '@/lib/payUtils';
 
 const DAYS = [
-    "Sunday","Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", 
+    "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", 
 ];
 
 type WeeklyPayFormProps = {
