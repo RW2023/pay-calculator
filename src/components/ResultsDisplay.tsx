@@ -10,15 +10,19 @@ interface ResultsDisplayProps {
 const ResultsDisplay = forwardRef<HTMLDivElement, ResultsDisplayProps>(({ result }, ref) => {
     const t = result.totals;
 
-    // Helper: only show rows for positive values
+    // Only show rows for positive values
     const payRows = [
         { label: "Regular Pay", value: t.regularPay, color: "text-[var(--color-olive)]", border: "border-[var(--color-olive)]" },
         { label: "Overtime Pay", value: t.overtimePay, color: "text-[var(--color-teal)]", border: "border-[var(--color-teal)]" },
         { label: "Holiday Pay", value: t.holidayPay, color: "text-yellow-500", border: "border-yellow-500" },
         { label: "Lieu (Sick/Leu) Pay", value: t.lieuPay, color: "text-blue-500", border: "border-blue-500" },
         { label: "BUMP Pay", value: t.bumpPay, color: "text-purple-500", border: "border-purple-500" },
+        // Premiums
+        { label: "Night Shift Premium", value: t.nightShiftPay, color: "text-slate-700", border: "border-slate-500" },
+        { label: "Weekend Premium", value: t.weekendPay, color: "text-amber-700", border: "border-amber-500" },
+        { label: "Weekend OT Premium", value: t.weekendOTPay, color: "text-rose-700", border: "border-rose-500" },
         { label: "Gross Pay", value: t.grossPay, color: "text-gray-500", border: "border-gray-400" }
-    ].filter(r => r.value && Math.abs(r.value) > 0.009); // Hide zeroes
+    ].filter(r => r.value && Math.abs(r.value) > 0.009);
 
     const deductionRows = [
         { label: "Tax", value: t.federalTax, color: "text-rose-700" },
@@ -35,7 +39,7 @@ const ResultsDisplay = forwardRef<HTMLDivElement, ResultsDisplayProps>(({ result
                 {payRows.map((r) => (
                     <div
                         key={r.label}
-                        className={`card bg-base-100 shadow rounded-xl p-4 border-l-4 ${r.border}`}
+                        className={`card shadow rounded-xl p-4 border-l-4 ${r.border} bg-[var(--color-neutral)]`}
                     >
                         <div className={`font-semibold text-lg ${r.color} flex items-center gap-2`}>
                             {r.label}
@@ -52,7 +56,7 @@ const ResultsDisplay = forwardRef<HTMLDivElement, ResultsDisplayProps>(({ result
             </div>
 
             {/* Deductions */}
-            <div className="card bg-base-100 shadow rounded-xl p-6 border-t-4 border-[var(--color-neutral-dark)]">
+            <div className="card shadow rounded-xl p-6 border-t-4 border-[var(--color-neutral-dark)] bg-[var(--color-neutral)]">
                 <div className="flex items-center gap-2 font-semibold text-lg text-[var(--color-neutral-dark)] mb-2">
                     <ReceiptText className="w-5 h-5" /> Deductions
                 </div>
@@ -67,7 +71,7 @@ const ResultsDisplay = forwardRef<HTMLDivElement, ResultsDisplayProps>(({ result
 
             {/* Net Pay and Quick Stats */}
             <div className="grid sm:grid-cols-2 gap-6">
-                <div className="card bg-[var(--color-teal)] shadow-xl rounded-xl p-6 flex flex-col items-center border-none">
+                <div className="card shadow-xl rounded-xl p-6 flex flex-col items-center border-none bg-[var(--color-teal)]">
                     <div className="flex items-center gap-2 text-2xl font-extrabold text-white uppercase tracking-wider">
                         <BadgeDollarSign className="w-8 h-8" />
                         Net Pay
@@ -76,7 +80,7 @@ const ResultsDisplay = forwardRef<HTMLDivElement, ResultsDisplayProps>(({ result
                         ${Number.isFinite(t.netPay) ? t.netPay.toFixed(2) : "0.00"}
                     </div>
                 </div>
-                <div className="card bg-base-100 shadow-xl rounded-xl p-6 flex flex-col justify-center border-none">
+                <div className="card shadow-xl rounded-xl p-6 flex flex-col justify-center border-none bg-[var(--color-neutral)]">
                     <div className="font-semibold text-lg text-[var(--color-olive)] mb-2">
                         Quick Stats
                     </div>

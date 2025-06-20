@@ -38,6 +38,9 @@ export interface WeeklyPayResult {
         holidayPay: number;
         lieuPay: number;
         bumpPay: number;
+        nightShiftPay: number;
+        weekendPay: number;
+        weekendOTPay: number;
         pensionDeducted: number;
         unionDuesDeducted: number;
         federalTax: number;
@@ -59,12 +62,29 @@ function parseTime(str: string): number {
     return (Number.isFinite(hours) ? hours : 0) + (Number.isFinite(mins) ? mins : 0) / 60;
 }
 
-export function calculateHours(start: string, end: string): number {
+function calculateHours(start: string, end: string): number {
     const startTotal = parseTime(start);
     const endTotal = parseTime(end);
     let diff = endTotal - startTotal;
     if (diff < 0) diff += 24;
     return Math.max(0, Math.round(diff * 100) / 100);
+}
+
+// Returns an array of time blocks (in hours as float) in 0.25h increments
+function getWorkedTimeBlocks(start: string, end: string, lunchTaken: boolean): number[] {
+    const s = parseTime(start);
+    let e = parseTime(end);
+    if (e < s) e += 24; // Overnight
+    const duration = e - s - (lunchTaken ? 0.5 : 0);
+    if (duration <= 0) return [];
+    const totalBlocks = Math.round(duration * 4);
+    const blocks: number[] = [];
+    for (let i = 0; i < totalBlocks; i++) {
+        let hour = s + i * 0.25;
+        if (hour >= 24) hour -= 24;
+        blocks.push(hour);
+    }
+    return blocks;
 }
 
 // --- Helper for getting numbers from env safely ---
@@ -83,7 +103,6 @@ function getEnvNumber(key: string, fallback: number): number {
 }
 
 // --- Constants for rates (all from env!) ---
-// These will only be resolved server-side, never client-side
 const REGULAR_RATE = getEnvNumber("REGULAR_RATE", 32.5);
 const OVERTIME_RATE = REGULAR_RATE * 1.5;
 const HOLIDAY_RATE = REGULAR_RATE * 1.5;
@@ -95,6 +114,11 @@ const EI_RATE = 0.0166;
 const CPP_RATE = 0.0595;
 const TAX_RATE_EST = 0.20;
 
+// --- Premium constants ---
+const NIGHT_SHIFT_PREMIUM = 1.0;
+const WEEKEND_PREMIUM = 2.0;
+const WEEKEND_OT_PREMIUM = 3.0;
+
 // --- Main calculation ---
 export function calculateWeeklyPay(input: WeeklyPayInput): WeeklyPayResult {
     let regularPay = 0;
@@ -104,6 +128,11 @@ export function calculateWeeklyPay(input: WeeklyPayInput): WeeklyPayResult {
     let bumpPay = 0;
     let totalHours = 0;
     let lieuDaysAccrued = 0;
+
+    // Premiums
+    let nightShiftHours = 0;
+    let weekendHours = 0;
+    let weekendOTHours = 0;
 
     const daysOfWeek = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 
@@ -119,34 +148,57 @@ export function calculateWeeklyPay(input: WeeklyPayInput): WeeklyPayResult {
             lieuHoursUsed: 0,
         };
 
-        // Subtract lunch from both actual and scheduled shift
-        let hoursWorked = (d.actualStart && d.actualEnd)
-            ? calculateHours(d.actualStart, d.actualEnd)
+        const hoursWorked = (d.actualStart && d.actualEnd)
+            ? (() => {
+                let h = parseTime(d.actualEnd) - parseTime(d.actualStart);
+                if (h < 0) h += 24;
+                if (d.lunchTaken) h = Math.max(0, h - 0.5);
+                return h;
+            })()
             : 0;
-        if (d.lunchTaken) hoursWorked = Math.max(0, hoursWorked - 0.5);
 
         let scheduledShift = calculateHours(d.scheduledStart, d.scheduledEnd);
         if (d.lunchTaken) scheduledShift = Math.max(0, scheduledShift - 0.5);
 
-        // Initialize all day payouts
+        // Premium time block analysis
+        const blocks = getWorkedTimeBlocks(d.actualStart, d.actualEnd, d.lunchTaken);
+        let nightBlocks = 0, weekendBlocks = 0, weekendOTBlocks = 0;
+        const isWeekend = (label === "Saturday" || label === "Sunday");
+        const otThresholdBlocks = 8 * 4; // Overtime after 8h/day (32 blocks)
+        blocks.forEach((hourVal, idx) => {
+            // Night premium: 21:00–24:00 or 00:00–04:00
+            if ((hourVal >= 21 && hourVal < 24) || (hourVal >= 0 && hourVal < 4)) {
+                nightBlocks++;
+            }
+            // Weekend premium
+            if (isWeekend) {
+                if (idx < otThresholdBlocks) {
+                    weekendBlocks++;
+                } else {
+                    weekendOTBlocks++;
+                }
+            }
+        });
+        nightShiftHours += nightBlocks * 0.25;
+        weekendHours += weekendBlocks * 0.25;
+        weekendOTHours += weekendOTBlocks * 0.25;
+
+        // Payout logic
         let paidHours = hoursWorked;
         let dayRegularPay = 0, dayOvertimePay = 0, dayHolidayPay = 0, dayBumpPay = 0;
         const dayLieuPay = Number((d.lieuHoursUsed * REGULAR_RATE).toFixed(2));
         let dayLieuDaysAccrued = 0;
 
-        // Holiday takes precedence over bump (if both toggled)
         if (d.isHoliday && paidHours > 0) {
             dayHolidayPay = Number((paidHours * HOLIDAY_RATE).toFixed(2));
             dayLieuDaysAccrued = 1;
         }
         else if (d.isBump && hoursWorked < scheduledShift) {
-            // Pay for scheduled shift (minus lunch if taken)
             paidHours = scheduledShift;
             dayRegularPay = Number((hoursWorked * REGULAR_RATE).toFixed(2));
             dayBumpPay = Number(((scheduledShift - hoursWorked) * REGULAR_RATE).toFixed(2));
         }
         else {
-            // No bump or holiday: regular + overtime
             dayRegularPay = Number((Math.min(hoursWorked, 8) * REGULAR_RATE).toFixed(2));
             dayOvertimePay = Number((Math.max(hoursWorked - 8, 0) * OVERTIME_RATE).toFixed(2));
         }
@@ -174,16 +226,26 @@ export function calculateWeeklyPay(input: WeeklyPayInput): WeeklyPayResult {
         };
     });
 
+    // Premium dollar calculation
+    const nightShiftPay = Number((nightShiftHours * NIGHT_SHIFT_PREMIUM).toFixed(2));
+    const weekendPay = Number((weekendHours * WEEKEND_PREMIUM).toFixed(2));
+    const weekendOTPay = Number((weekendOTHours * WEEKEND_OT_PREMIUM).toFixed(2));
+
+    const grossPay =
+        regularPay +
+        overtimePay +
+        holidayPay +
+        lieuPay +
+        bumpPay +
+        nightShiftPay +
+        weekendPay +
+        weekendOTPay;
+
     const pensionDeducted = input.hasPension ? Number((PENSION_BIWEEKLY / 2).toFixed(2)) : 0;
-    const unionDuesDeducted = input.hasUnionDues ? Number(UNION_DUES_WEEKLY.toFixed(2)) : 0;
-
-    const grossPay = regularPay + overtimePay + holidayPay + lieuPay + bumpPay;
-
+    const unionDuesDeducted = input.hasUnionDues ? Number((UNION_DUES_WEEKLY).toFixed(2)) : 0;
     const federalTax = Number((TAX_RATE_EST * grossPay).toFixed(2));
     const ei = Number((EI_RATE * grossPay).toFixed(2));
     const cpp = Number((CPP_RATE * grossPay).toFixed(2));
-
-    // Never allow negative net pay
     const netPay = Math.max(0, Number((grossPay - pensionDeducted - unionDuesDeducted - federalTax - ei - cpp).toFixed(2)));
 
     return {
@@ -194,6 +256,9 @@ export function calculateWeeklyPay(input: WeeklyPayInput): WeeklyPayResult {
             holidayPay,
             lieuPay,
             bumpPay,
+            nightShiftPay,
+            weekendPay,
+            weekendOTPay,
             pensionDeducted,
             unionDuesDeducted,
             federalTax,
