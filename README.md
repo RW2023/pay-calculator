@@ -2,7 +2,7 @@
 
 PayCalc is a web-based pay calculator built with Next.js, React, and TypeScript. It helps employees estimate their weekly pay by accounting for overtime, holiday rates and deductions. The app includes a simple form for entering times and provides an option to print or export a pay stub as PDF.
 
-![App Screenshot](screenShot.png)
+![App Screenshot](public/screenShot.png)
 
 ## Features
 
@@ -49,10 +49,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser. Navigate to
 2. Use **Print Results** to print directly from the browser.
 3. Click **Download PDF** to save the pay stub.
 
-## Troubleshooting
 
-- **"next: not found"** – make sure `npm install` ran successfully and `node_modules` exists.
-- **Unexpected pay amounts** – verify environment variables for rates and deductions are set correctly.
 
 ## Contributing
 
