@@ -5,13 +5,14 @@ import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import ThemeToggle from '@/components/ThemeToggle';
-import {Logo} from '@/components/Logo'; // Assuming you have a Logo c
+import { Logo } from '@/components/Logo'; // Assuming you have a Logo c
 
 const navItems = [
     { name: 'Home', href: '/' },
     { name: 'Pay', href: '/pay' },
-    { name: 'History', href: '/history' },
-    { name: 'Settings', href: '/settings' },
+    // { name: 'History', href: '/history' },
+    { name: 'About', href: '/about' },
+    // { name: 'Settings', href: '/settings' },
 ];
 
 export default function Navbar() {
@@ -28,7 +29,7 @@ export default function Navbar() {
           bg-[var(--background)] text-[var(--foreground)]
           transition-colors duration-300
         "
-      >
+        >
             <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-20">
                 {/* Brand / Logo */}
                 <Link href="/" className="flex items-center gap-2">
