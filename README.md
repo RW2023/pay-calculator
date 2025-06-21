@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PayCalc
 
-## Getting Started
+PayCalc is a web-based pay calculator built with Next.js, React, and TypeScript. It helps employees estimate their weekly pay by accounting for overtime, holiday rates and deductions. The app includes a simple form for entering times and provides an option to print or export a pay stub as PDF.
 
-First, run the development server:
+![App Screenshot](screenshot.png)
+
+## Features
+
+- Calculate regular, overtime and holiday pay
+- Apply deductions such as pension, union dues, CPP and EI
+- Supports night shift and weekend premiums
+- "Print" and "Download PDF" buttons to export a pay stub
+- Offline capable Progressive Web App
+
+## Prerequisites
+
+- **Node.js** 18 or newer
+- **npm** or compatible package manager
+- A modern browser (Chrome, Firefox, Edge, Safari)
+- Optional: Values for pay rates and deductions can be configured via environment variables:
+  - `REGULAR_RATE`
+  - `PENSION_BIWEEKLY`
+  - `UNION_DUES_WEEKLY`
+
+## Installation
+
+```bash
+# Clone the repo
+git clone <repository-url>
+cd pay-calculator
+
+# Install dependencies
+npm install
+```
+
+## Usage
+
+### Run the app
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser. Navigate to **/pay** to access the calculator form.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Exporting a Pay Stub
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Fill out the weekly schedule and click **Calculate**.
+2. Use **Print Results** to print directly from the browser.
+3. Click **Download PDF** to save the pay stub.
 
-## Learn More
+## Troubleshooting
 
-To learn more about Next.js, take a look at the following resources:
+- **"next: not found"** – make sure `npm install` ran successfully and `node_modules` exists.
+- **Unexpected pay amounts** – verify environment variables for rates and deductions are set correctly.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Contributing
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Contributions are welcome! Fork the repository and open a pull request with your changes.
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the MIT License.
