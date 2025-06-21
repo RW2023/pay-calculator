@@ -6,6 +6,7 @@ import ResultsDisplay from '@/components/ResultsDisplay';
 import PrintButton from '@/components/PrintButton';
 import type { WeeklyPayInput, WeeklyPayResult } from '@/lib/payUtils';
 import { calculatePayAction } from '@/app/actions/calculatePay';
+import DownloadPDFButton from '@/components/DownloadPDFButton';
 
 export default function PayCalculatorPage() {
     const [result, setResult] = useState<WeeklyPayResult | null>(null);
@@ -28,8 +29,9 @@ export default function PayCalculatorPage() {
             {pending && <div className="text-center text-gray-500">Calculating...</div>}
             {result && (
                 <section className="w-full mt-4 space-y-4">
-                    <div className="flex justify-end">
+                    <div className="flex justify-end gap-2">
                         <PrintButton targetRef={resultsRef} />
+                        <DownloadPDFButton targetRef={resultsRef} />
                     </div>
                     <ResultsDisplay ref={resultsRef} result={result} />
                 </section>
