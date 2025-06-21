@@ -1,23 +1,18 @@
-'use client';
-
-import { useRef, useState, useTransition } from 'react';
-import WeeklyPayForm from '@/components/WeeklyPayForm';
-import ResultsDisplay from '@/components/ResultsDisplay';
-import PrintButton from '@/components/PrintButton';
-import type { WeeklyPayInput, WeeklyPayResult } from '@/lib/payUtils';
-import { calculatePayAction } from '@/app/actions/calculatePay';
-import DownloadPDFButton from '@/components/DownloadPDFButton';
+// app/pay/page.tsx
+"use client";
+import { useRef, useState } from "react";
+import WeeklyPayForm from "@/components/WeeklyPayForm";
+import ResultsDisplay from "@/components/ResultsDisplay";
+import PrintButton from "@/components/PrintButton";
+import DownloadPDFButton from "@/components/DownloadPDFButton"; // <-- Add this import
+import { calculateWeeklyPay, WeeklyPayInput, WeeklyPayResult } from "@/lib/payUtils";
 
 export default function PayCalculatorPage() {
     const [result, setResult] = useState<WeeklyPayResult | null>(null);
-    const [pending, startTransition] = useTransition();
     const resultsRef = useRef<HTMLDivElement>(null);
 
     const handleFormSubmit = (values: WeeklyPayInput) => {
-        startTransition(async () => {
-            const res = await calculatePayAction(values);
-            setResult(res);
-        });
+        setResult(calculateWeeklyPay(values));
     };
 
     return (
@@ -26,14 +21,15 @@ export default function PayCalculatorPage() {
                 Weekly Pay Calculator
             </h1>
             <WeeklyPayForm onSubmit={handleFormSubmit} />
-            {pending && <div className="text-center text-gray-500">Calculating...</div>}
             {result && (
                 <section className="w-full mt-4 space-y-4">
                     <div className="flex justify-end gap-2">
                         <PrintButton targetRef={resultsRef} />
-                        <DownloadPDFButton targetRef={resultsRef} />
+                        <DownloadPDFButton targetRef={resultsRef} /> {/* <-- Add this line */}
                     </div>
-                    <ResultsDisplay ref={resultsRef} result={result} />
+                    <div ref={resultsRef}>
+                        <ResultsDisplay result={result} />
+                    </div>
                 </section>
             )}
         </main>
