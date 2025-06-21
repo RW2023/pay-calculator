@@ -47,7 +47,7 @@ export default function AboutPage() {
             <AboutSection text="This app mirrors your ADP reports by calculating daily hours, bump rates, pension and union dues. Enter your actual clock-in/out times, and the calculator handles breaks, overtime, and special holiday rates automatically." />
             <HowItWorksSection steps={steps} />
             <FeaturesSection features={features} />
-            <SupportSection email="support@example.com" />
+            <SupportSection />
         </main>
     );
 }
