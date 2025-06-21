@@ -1,21 +1,18 @@
-import { Printer } from "lucide-react";
-import { RefObject } from "react";
+'use client'
+
+import { Printer } from 'lucide-react'
+import { RefObject } from 'react'
+import { useReactToPrint } from 'react-to-print'
 
 interface PrintButtonProps {
-    targetRef: RefObject<HTMLDivElement | null>; // Accept null!
-    label?: string;
+    targetRef: RefObject<HTMLDivElement | null>
+    label?: string
 }
 
-export default function PrintButton({ targetRef, label = "Print Results" }: PrintButtonProps) {
-    const handlePrint = () => {
-        if (!targetRef.current) return;
-        const printContents = targetRef.current.innerHTML;
-        const originalContents = document.body.innerHTML;
-        document.body.innerHTML = printContents;
-        window.print();
-        document.body.innerHTML = originalContents;
-        window.location.reload();
-    };
+export default function PrintButton({ targetRef, label = 'Print Results' }: PrintButtonProps) {
+    const handlePrint = useReactToPrint({
+        contentRef: targetRef,
+    })
 
     return (
         <button
