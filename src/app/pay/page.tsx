@@ -4,8 +4,8 @@ import { useRef, useState } from "react";
 import WeeklyPayForm from "@/components/WeeklyPayForm";
 import ResultsDisplay from "@/components/ResultsDisplay";
 import PrintButton from "@/components/PrintButton";
-import DownloadPDFButton from "@/components/DownloadPDFButton"; // <-- Add this import
 import { calculateWeeklyPay, WeeklyPayInput, WeeklyPayResult } from "@/lib/payUtils";
+import DownloadPDFButton from "@/components/DownloadPDFButton";
 
 export default function PayCalculatorPage() {
     const [result, setResult] = useState<WeeklyPayResult | null>(null);
@@ -23,13 +23,11 @@ export default function PayCalculatorPage() {
             <WeeklyPayForm onSubmit={handleFormSubmit} />
             {result && (
                 <section className="w-full mt-4 space-y-4">
-                    <div className="flex justify-end gap-2">
+                    <div className="flex justify-end">
                         <PrintButton targetRef={resultsRef} />
-                        <DownloadPDFButton targetRef={resultsRef} /> {/* <-- Add this line */}
+                        <DownloadPDFButton targetRef={resultsRef} />
                     </div>
-                    <div ref={resultsRef}>
-                        <ResultsDisplay result={result} />
-                    </div>
+                    <ResultsDisplay ref={resultsRef} result={result} />
                 </section>
             )}
         </main>

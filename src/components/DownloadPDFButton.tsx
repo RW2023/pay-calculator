@@ -2,8 +2,6 @@
 "use client";
 import { Download } from "lucide-react";
 import { RefObject } from "react";
-// @ts-expect-error: html2pdf.js has no TypeScript types available
-import html2pdf from "html2pdf.js";
 
 interface DownloadPDFButtonProps {
     targetRef: RefObject<HTMLDivElement | null>;
@@ -11,9 +9,14 @@ interface DownloadPDFButtonProps {
     label?: string;
 }
 
-export default function DownloadPDFButton({ targetRef, filename = "pay-results.pdf", label = "Download PDF" }: DownloadPDFButtonProps) {
-    const handleDownload = () => {
+export default function DownloadPDFButton({
+    targetRef,
+    filename = "pay-results.pdf",
+    label = "Download PDF",
+}: DownloadPDFButtonProps) {
+    const handleDownload = async () => {
         if (!targetRef.current) return;
+        const html2pdf = (await import("html2pdf.js")).default;
         html2pdf()
             .from(targetRef.current)
             .set({
