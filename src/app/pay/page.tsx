@@ -4,9 +4,9 @@ import { useRef, useState, useTransition } from "react";
 import WeeklyPayForm from "@/components/WeeklyPayForm";
 import ResultsDisplay from "@/components/ResultsDisplay";
 import PrintButton from "@/components/PrintButton";
-import DownloadPDFButton from "@/components/DownloadPDFButton";
+// import DownloadPDFButton from "@/components/DownloadPDFButton"; <-- troubleshooting. will enable later 
 import type { WeeklyPayInput, WeeklyPayResult } from "@/lib/payUtils";
-import { calculatePayAction } from "@/app/actions/calculatePay"; // <- Import your server action
+import { calculatePayAction } from "@/app/actions/calculatePay"; 
 
 export default function PayCalculatorPage() {
     const [result, setResult] = useState<WeeklyPayResult | null>(null);
@@ -31,7 +31,7 @@ export default function PayCalculatorPage() {
                 <section className="w-full mt-4 space-y-4">
                     <div className="flex justify-end gap-2">
                         <PrintButton targetRef={resultsRef} />
-                        <DownloadPDFButton targetRef={resultsRef} />
+                        {/* <DownloadPDFButton targetRef={resultsRef} /> */}
                     </div>
                     <div ref={resultsRef}>
                         <ResultsDisplay result={result} />
