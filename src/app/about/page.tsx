@@ -11,17 +11,23 @@ export default function AboutPage() {
             title: "1. Enter Your Shift",
             description:
                 "Fill in your scheduled and actual start/end times for each day. Toggle lunch breaks, holidays, and bump days as needed.",
-            screenshot: "/screenshots/step1.png",
-            alt: "Step 1 screenshot",
+            screenshot: "/images/step1-enter-times.png",
+            alt: "Form showing start and end time inputs filled out",
         },
         {
             title: "2. Review Your Totals",
             description:
                 "The app immediately shows your regular pay, overtime, total hours, and any unpaid breaks—compare against your ADP report.",
-            screenshot: "/screenshots/step2.png",
-            alt: "Step 2 screenshot",
+            screenshot: "/images/step2-review-results.png",
+            alt: "Screenshot showing calculated pay breakdown and totals",
         },
-        // add more steps here...
+        {
+            title: "3. Print Your Report",
+            description:
+                "For now the app supports printing your full report for your records. Printing to pdf on mobile is still buggy so printing to pdf can be done from desktop by choosing pdf as the printer.",
+            screenshot: "/images/step3-download-pdf.png",
+            alt: "PDF download preview with results displayed",
+        },
     ];
 
     const features = [
@@ -29,7 +35,7 @@ export default function AboutPage() {
         "Overtime & double-time holiday calculations",
         "Union dues & pension toggles",
         "Dark & light mode support",
-        "Printable PDF export of your weekly report",
+        "Printout of your weekly report. Mobile pdf support is coming soon!",
     ];
 
     return (

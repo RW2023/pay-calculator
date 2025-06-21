@@ -1,4 +1,3 @@
-// components/About/HowItWorksSection.tsx
 import Image from "next/image";
 
 export interface Step {
@@ -22,7 +21,8 @@ export default function HowItWorksSection({ steps }: HowItWorksSectionProps) {
                 {steps.map((step, idx) => (
                     <div
                         key={idx}
-                        className="bg-[var(--color-neutral)] shadow rounded-xl p-6 flex flex-col md:flex-row gap-6"
+                        className={`bg-[var(--color-neutral)] shadow rounded-xl p-6 flex flex-col md:flex-row gap-6 ${idx % 2 === 1 ? "md:flex-row-reverse" : ""
+                            }`}
                     >
                         <div className="flex-shrink-0 w-full md:w-1/2">
                             <Image
