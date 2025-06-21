@@ -4,28 +4,26 @@ import { useRef, useState, useTransition, useEffect } from "react";
 import WeeklyPayForm from "@/components/WeeklyPayForm";
 import ResultsDisplay from "@/components/ResultsDisplay";
 import PrintButton from "@/components/PrintButton";
-// import DownloadPDFButton from "@/components/DownloadPDFButton"; <-- troubleshooting. will enable later 
+// import DownloadPDFButton from "@/components/DownloadPDFButton";
 import type { WeeklyPayInput, WeeklyPayResult } from "@/lib/payUtils";
 import { calculatePayAction } from "@/app/actions/calculatePay";
 
 export default function PayCalculatorPage() {
     const [result, setResult] = useState<WeeklyPayResult | null>(null);
     const [pending, startTransition] = useTransition();
+    const [formKey, setFormKey] = useState(0);           // ← add this
     const resultsRef = useRef<HTMLDivElement>(null);
 
-    // 1. Load persisted result on mount
+    // load any saved result
     useEffect(() => {
         const stored = localStorage.getItem("weeklyPayResult");
         if (stored) {
-            try {
-                setResult(JSON.parse(stored));
-            } catch {
-                localStorage.removeItem("weeklyPayResult");
-            }
+            try { setResult(JSON.parse(stored)); }
+            catch { localStorage.removeItem("weeklyPayResult"); }
         }
     }, []);
 
-    // 2. Persist to localStorage whenever result changes
+    // persist result whenever it changes
     useEffect(() => {
         if (result) {
             localStorage.setItem("weeklyPayResult", JSON.stringify(result));
@@ -34,15 +32,21 @@ export default function PayCalculatorPage() {
 
     const handleFormSubmit = (values: WeeklyPayInput) => {
         startTransition(async () => {
-            const res = await calculatePayAction(values); // <- Runs on server!
+            const res = await calculatePayAction(values);
             setResult(res);
         });
     };
 
-    // 3. Reset handler
     const handleReset = () => {
-        setResult(null);
+        // 1) clear both storage keys
         localStorage.removeItem("weeklyPayResult");
+        localStorage.removeItem("weeklyPayForm");
+
+        // 2) clear displayed result
+        setResult(null);
+
+        // 3) force WeeklyPayForm to remount (and pick up its defaults)
+        setFormKey((k) => k + 1);
     };
 
     return (
@@ -51,7 +55,8 @@ export default function PayCalculatorPage() {
                 Weekly Pay Calculator
             </h1>
 
-            <WeeklyPayForm onSubmit={handleFormSubmit} />
+            {/* use `formKey` so remounting resets the form */}
+            <WeeklyPayForm key={formKey} onSubmit={handleFormSubmit} />
 
             {pending && (
                 <div className="text-center text-gray-500">Calculating...</div>
@@ -62,14 +67,10 @@ export default function PayCalculatorPage() {
                     <div className="flex justify-end gap-2">
                         <PrintButton targetRef={resultsRef} />
                         {/* <DownloadPDFButton targetRef={resultsRef} /> */}
-                        <button
-                            onClick={handleReset}
-                            className="btn btn-outline btn-sm"
-                        >
-                            Reset
+                        <button onClick={handleReset} className="btn btn-outline btn-sm">
+                            Reset All
                         </button>
                     </div>
-
                     <div ref={resultsRef}>
                         <ResultsDisplay result={result} />
                     </div>
