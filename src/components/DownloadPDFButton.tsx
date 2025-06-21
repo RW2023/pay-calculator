@@ -16,16 +16,20 @@ export default function DownloadPDFButton({
 }: DownloadPDFButtonProps) {
     const handleDownload = async () => {
         if (!targetRef.current) return;
-        const html2pdf = (await import("html2pdf.js")).default;
-        html2pdf()
-            .from(targetRef.current)
-            .set({
-                margin: 0.5,
-                filename,
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: "in", format: "letter", orientation: "portrait" }
-            })
-            .save();
+        try {
+            const { default: html2pdf } = await import("html2pdf.js");
+            await html2pdf()
+                .from(targetRef.current)
+                .set({
+                    margin: 0.5,
+                    filename,
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: "in", format: "letter", orientation: "portrait" }
+                })
+                .save();
+        } catch (err) {
+            console.error("Failed to generate PDF", err);
+        }
     };
 
     return (
