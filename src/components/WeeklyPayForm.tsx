@@ -4,7 +4,7 @@ import { useState } from 'react';
 import type { DayEntry } from '@/lib/payUtils';
 
 const DAYS = [
-    "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", 
+    "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday",
 ];
 
 type WeeklyPayFormProps = {
@@ -22,7 +22,7 @@ export default function WeeklyPayForm({ onSubmit }: WeeklyPayFormProps) {
             scheduledEnd: '05:30',
             actualStart: '',
             actualEnd: '',
-            lunchTaken: true,
+            breakMinutes: 30,
             isHoliday: false,
             isBump: false,
             lieuHoursUsed: 0,
@@ -31,7 +31,6 @@ export default function WeeklyPayForm({ onSubmit }: WeeklyPayFormProps) {
     const [hasPension, setHasPension] = useState(true);
     const [hasUnionDues, setHasUnionDues] = useState(true);
 
-    // Utility for safe controlled inputs (always returns a defined string)
     const safeTime = (val: string | undefined) => typeof val === 'string' ? val : '';
 
     return (
@@ -53,7 +52,7 @@ export default function WeeklyPayForm({ onSubmit }: WeeklyPayFormProps) {
                             <th>Sched. End</th>
                             <th>Actual Start</th>
                             <th>Actual End</th>
-                            <th>Lunch?</th>
+                            <th>Break (min)</th>
                             <th>Holiday?</th>
                             <th>BUMP?</th>
                             <th>Lieu Used (hrs)</th>
@@ -61,22 +60,13 @@ export default function WeeklyPayForm({ onSubmit }: WeeklyPayFormProps) {
                     </thead>
                     <tbody>
                         {DAYS.map((label, idx) => {
-                            const day = days[idx] ?? {
-                                scheduledStart: '',
-                                scheduledEnd: '',
-                                actualStart: '',
-                                actualEnd: '',
-                                lunchTaken: true,
-                                isHoliday: false,
-                                isBump: false,
-                                lieuHoursUsed: 0,
-                            };
+                            const day = days[idx]!;
                             return (
                                 <tr key={label}>
                                     <td className="font-semibold">{label}</td>
                                     <td>
                                         <input
-                                            title='Scheduled Start Time'
+                                            title="Scheduled Start Time"
                                             type="time"
                                             className="input input-bordered w-full"
                                             value={safeTime(day.scheduledStart)}
@@ -95,7 +85,7 @@ export default function WeeklyPayForm({ onSubmit }: WeeklyPayFormProps) {
                                     </td>
                                     <td>
                                         <input
-                                            title='Scheduled End Time'
+                                            title="Scheduled End Time"
                                             type="time"
                                             className="input input-bordered w-full"
                                             value={safeTime(day.scheduledEnd)}
@@ -149,28 +139,31 @@ export default function WeeklyPayForm({ onSubmit }: WeeklyPayFormProps) {
                                         />
                                     </td>
                                     <td>
-                                        <input
-                                            type="checkbox"
-                                            className="toggle toggle-info"
-                                            checked={!!day.lunchTaken}
+                                        <select
+                                            className="input input-sm w-full"
+                                            value={day.breakMinutes}
                                             onChange={e =>
                                                 setDays(prev =>
                                                     prev.map((d, i) =>
                                                         i === idx
-                                                            ? { ...d, lunchTaken: e.target.checked }
+                                                            ? { ...d, breakMinutes: Number(e.target.value) }
                                                             : d
                                                     )
                                                 )
                                             }
-                                            title="Lunch taken (deduct 0.5h)"
-                                            aria-label={`${label} lunch taken`}
-                                        />
+                                            aria-label={`${label} break minutes`}
+                                        >
+                                            <option value={0}>0</option>
+                                            <option value={30}>30</option>
+                                            <option value={45}>45</option>
+                                            <option value={60}>60</option>
+                                        </select>
                                     </td>
                                     <td>
                                         <input
                                             type="checkbox"
                                             className="toggle toggle-success"
-                                            checked={!!day.isHoliday}
+                                            checked={day.isHoliday}
                                             onChange={e =>
                                                 setDays(prev =>
                                                     prev.map((d, i) =>
@@ -188,7 +181,7 @@ export default function WeeklyPayForm({ onSubmit }: WeeklyPayFormProps) {
                                         <input
                                             type="checkbox"
                                             className="toggle toggle-warning"
-                                            checked={!!day.isBump}
+                                            checked={day.isBump}
                                             onChange={e =>
                                                 setDays(prev =>
                                                     prev.map((d, i) =>
@@ -229,6 +222,7 @@ export default function WeeklyPayForm({ onSubmit }: WeeklyPayFormProps) {
                     </tbody>
                 </table>
             </div>
+
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
                 <label className="flex items-center gap-2 font-medium">
                     <input
