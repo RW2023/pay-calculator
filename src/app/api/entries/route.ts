@@ -2,33 +2,66 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getDb } from "@/lib/mongodb";
+import type { DayEntry } from "@/lib/payUtils";
 
-// POST /api/entries  → create a new week’s shifts
+type EntryPayload = {
+  days: DayEntry[];
+  hasPension: boolean;
+  hasUnionDues: boolean;
+};
+
 export async function POST(request: NextRequest) {
-  const { days, hasPension, hasUnionDues } = await request.json();
+  try {
+    // 1. Parse & validate body
+    const payload = (await request.json()) as Partial<EntryPayload>;
+    if (
+      !payload.days ||
+      !Array.isArray(payload.days) ||
+      typeof payload.hasPension !== "boolean" ||
+      typeof payload.hasUnionDues !== "boolean"
+    ) {
+      throw new Error("Invalid request body");
+    }
 
-  const db = await getDb();
-  const result = await db.collection("shiftEntries").insertOne({
-    days,
-    hasPension,
-    hasUnionDues,
-    createdAt: new Date(),
-  });
+    // 2. Persist to MongoDB
+    const db = await getDb();
+    const result = await db.collection("shiftEntries").insertOne({
+      days: payload.days,
+      hasPension: payload.hasPension,
+      hasUnionDues: payload.hasUnionDues,
+      createdAt: new Date(),
+    });
 
-  return NextResponse.json({ insertedId: result.insertedId });
+    return NextResponse.json({ insertedId: result.insertedId });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "Unknown error";
+    console.error("POST /api/entries error:", message);
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }
 
-// GET /api/entries?limit=10 → list recent entries
 export async function GET(request: NextRequest) {
-  const db = await getDb();
-  const limit = Number(request.nextUrl.searchParams.get("limit") ?? 20);
+  try {
+    // 1. Read & sanitize query
+    const limitParam = request.nextUrl.searchParams.get("limit");
+    const limit = limitParam ? parseInt(limitParam, 10) : 20;
+    if (isNaN(limit) || limit < 1) {
+      throw new Error("`limit` must be a positive integer");
+    }
 
-  const entries = await db
-    .collection("shiftEntries")
-    .find()
-    .sort({ createdAt: -1 })
-    .limit(limit)
-    .toArray();
+    // 2. Fetch from MongoDB
+    const db = await getDb();
+    const entries = await db
+      .collection("shiftEntries")
+      .find()
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .toArray();
 
-  return NextResponse.json(entries);
+    return NextResponse.json(entries);
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "Unknown error";
+    console.error("GET /api/entries error:", message);
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }
