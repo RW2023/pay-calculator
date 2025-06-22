@@ -1,53 +1,63 @@
-//src/app/pay/page.tsx
-
 'use client';
 
 import { useRef, useState, useTransition, useEffect } from "react";
-import WeeklyPayForm from "@/components/WeeklyPayForm";
+import { useSearchParams } from "next/navigation";
+import WeeklyPayForm, { WeeklyPayInput } from "@/components/WeeklyPayForm";
 import ResultsDisplay from "@/components/ResultsDisplay";
 import PrintButton from "@/components/PrintButton";
-// import DownloadPDFButton from "@/components/DownloadPDFButton";
-import type { WeeklyPayInput, WeeklyPayResult } from "@/lib/payUtils";
+import type { WeeklyPayResult } from "@/lib/payUtils";
 import { calculatePayAction } from "@/app/actions/calculatePay";
 
 export default function PayCalculatorPage() {
+    const searchParams = useSearchParams();
+    const editId = searchParams.get("editId") ?? undefined;
+
+    const [initialValues, setInitialValues] = useState<WeeklyPayInput>();
     const [result, setResult] = useState<WeeklyPayResult | null>(null);
     const [pending, startTransition] = useTransition();
-    const [formKey, setFormKey] = useState(0);           // ← add this
+    const [formKey, setFormKey] = useState(0);
     const resultsRef = useRef<HTMLDivElement>(null);
 
-    // load any saved result
+    // Load saved week when ?editId= is present
     useEffect(() => {
-        const stored = localStorage.getItem("weeklyPayResult");
-        if (stored) {
-            try { setResult(JSON.parse(stored)); }
-            catch { localStorage.removeItem("weeklyPayResult"); }
+        if (editId) {
+            fetch(`/api/entries/${editId}`)
+                .then(async (res) => {
+                    if (!res.ok) throw new Error(await res.text());
+                    return res.json() as Promise<WeeklyPayInput & { createdAt: string }>;
+                })
+                .then((entry) => {
+                    setInitialValues({
+                        days: entry.days,
+                        hasPension: entry.hasPension,
+                        hasUnionDues: entry.hasUnionDues,
+                    });
+                    // remount form to pick up new initialValues
+                    setFormKey((k) => k + 1);
+                })
+                .catch((err) => {
+                    console.error("Failed to load entry for edit:", err);
+                });
         }
-    }, []);
+    }, [editId]);
 
-    // persist result whenever it changes
-    useEffect(() => {
-        if (result) {
-            localStorage.setItem("weeklyPayResult", JSON.stringify(result));
-        }
-    }, [result]);
-
-    const handleFormSubmit = (values: WeeklyPayInput) => {
+    // Submit: re-save (snapshot) + calculate
+    function handleFormSubmit(values: WeeklyPayInput) {
         startTransition(async () => {
+            // optional: snapshot new version
+            await fetch("/api/entries", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(values),
+            });
             const res = await calculatePayAction(values);
             setResult(res);
         });
-    };
+    }
 
     const handleReset = () => {
-        // 1) clear both storage keys
-        localStorage.removeItem("weeklyPayResult");
-        localStorage.removeItem("weeklyPayForm");
-
-        // 2) clear displayed result
         setResult(null);
-
-        // 3) force WeeklyPayForm to remount (and pick up its defaults)
+        setInitialValues(undefined);
         setFormKey((k) => k + 1);
     };
 
@@ -57,18 +67,22 @@ export default function PayCalculatorPage() {
                 Weekly Pay Calculator
             </h1>
 
-            {/* use `formKey` so remounting resets the form */}
-            <WeeklyPayForm key={formKey} onSubmit={handleFormSubmit} />
+            <WeeklyPayForm
+                key={formKey}
+                onSubmit={handleFormSubmit}
+                initialValues={initialValues}
+            />
 
             {pending && (
-                <div className="text-center text-gray-500">Calculating...</div>
+                <div className="text-center text-gray-500">
+                    {editId ? "Loading & saving…" : "Calculating…"}
+                </div>
             )}
 
             {result && (
                 <section className="w-full mt-4 space-y-4">
                     <div className="flex justify-end gap-2">
                         <PrintButton targetRef={resultsRef} />
-                        {/* <DownloadPDFButton targetRef={resultsRef} /> */}
                         <button onClick={handleReset} className="btn btn-outline btn-sm">
                             Reset All
                         </button>

@@ -17,7 +17,6 @@ const karla = Karla({
   weight: ["400", "700"],
 });
 
-// your page metadata stays on the server
 export const metadata: Metadata = {
   title: "Pay Calculator",
   description: "Calculate hours worked and pay earned in real-time.",
@@ -29,15 +28,15 @@ export const metadata: Metadata = {
   },
 };
 
-
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    // Add suppressHydrationWarning and initial 'light' class on html to match client
+    <html lang="en" className="light" suppressHydrationWarning>
       <body className={`${poppins.variable} ${karla.variable} antialiased`}>
-        {/* wraps your entire app in theme context */}
-        <ThemeProvider attribute="class" enableSystem defaultTheme="system">
+        {/* wraps your entire app in theme context with static default theme */}
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} enableColorScheme={false}>
           <Navbar />
           {children}
         </ThemeProvider>
