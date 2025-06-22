@@ -11,8 +11,7 @@ const VALID_BASIC =
     : '';
 
 export function middleware(req: NextRequest) {
-  // only protect /admin and its sub-paths
-  if (req.nextUrl.pathname.startsWith('/admin')) {
+  if (req.nextUrl.pathname === '/admin' || req.nextUrl.pathname.startsWith('/admin/')) {
     const auth = req.headers.get('authorization') || '';
     if (auth !== VALID_BASIC) {
       return new NextResponse('Authentication required', {
@@ -21,10 +20,11 @@ export function middleware(req: NextRequest) {
       });
     }
   }
+
   return NextResponse.next();
 }
 
+// ✅ This ensures both /admin and /admin/* paths are protected
 export const config = {
-  // apply to everything under /admin
-  matcher: ['/admin/:path*'],
+  matcher: ['/admin', '/admin/:path*'],
 };

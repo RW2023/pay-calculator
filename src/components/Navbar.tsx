@@ -20,55 +20,64 @@ export default function Navbar() {
         <nav
             role="navigation"
             aria-label="Main menu"
-            className="
-        sticky top-0 z-50
-        shadow-sm
-        border-b border-[rgba(0,0,0,0.1)]
-        bg-[var(--background)] text-[var(--foreground)]
-        transition-colors duration-300
-      "
+            className="sticky top-0 z-50 shadow-sm border-b border-[rgba(0,0,0,0.1)] bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300"
         >
-            {/* --- Top bar ----------------------------------------------------- */}
             <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-20">
                 <Link href="/" className="flex items-center gap-2">
                     <Logo size={60} />
                     <span className="font-bold text-xl">PayCalc</span>
                 </Link>
 
+                {/* Desktop Menu */}
                 <div className="hidden lg:flex items-center space-x-6">
-                    {navItems.map(item => (
+                    {navItems.map((item) => (
                         <Link
                             key={item.name}
                             href={item.href}
-                            className="font-medium hover:underline transition text-[var(--foreground)]"
+                            className="font-medium hover:underline transition"
                         >
                             {item.name}
                         </Link>
                     ))}
+
+                    {/* Admin Dropdown */}
+                    <div className="dropdown dropdown-hover">
+                        <button tabIndex={0} className="font-medium hover:underline transition">
+                            Admin
+                        </button>
+                        <ul
+                            tabIndex={0}
+                            className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-48"
+                        >
+                            <li>
+                                <Link href="/admin">Dashboard</Link>
+                            </li>
+                            <li>
+                                <Link href="/admin/history">Entry History</Link>
+                            </li>
+                        </ul>
+                    </div>
+
                     <ThemeToggle />
                 </div>
 
-                {/* Mobile toggle button */}
+                {/* Mobile Toggle */}
                 <button
                     title="Toggle mobile menu"
                     type="button"
-                    onClick={() => setMobileOpen(o => !o)}
+                    onClick={() => setMobileOpen((prev) => !prev)}
                     className="lg:hidden p-2"
                     aria-label="Toggle menu"
                     aria-controls="mobile-menu"
-                    aria-expanded={mobileOpen ? 'true' : 'false'}  // string, not boolean
+                    aria-expanded={mobileOpen}
                 >
                     {mobileOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
             </div>
 
-            {/* --- Mobile panel (always in DOM) -------------------------------- */}
+            {/* Mobile Panel */}
             <motion.div
                 id="mobile-menu"
-                /*
-                 * We keep the element mounted so aria-controls is always valid.
-                 * Closed state: display:none (via variants.transitionEnd).
-                 */
                 variants={{
                     open: { height: 'auto', opacity: 1, display: 'block' },
                     closed: { height: 0, opacity: 0, transitionEnd: { display: 'none' } },
@@ -83,10 +92,10 @@ export default function Navbar() {
                     borderColor: 'rgba(0,0,0,0.1)',
                 }}
                 role="menu"
-                aria-hidden={mobileOpen ? 'false' : 'true'}
+                aria-hidden={!mobileOpen}
             >
                 <div className="px-4 py-6 space-y-4">
-                    {navItems.map(item => (
+                    {navItems.map((item) => (
                         <Link
                             key={item.name}
                             href={item.href}
@@ -97,6 +106,26 @@ export default function Navbar() {
                             {item.name}
                         </Link>
                     ))}
+
+                    {/* Admin Section */}
+                    <div className="pt-4 border-t space-y-2">
+                        <span className="font-semibold">Admin</span>
+                        <Link
+                            href="/admin"
+                            onClick={() => setMobileOpen(false)}
+                            className="block ml-4 hover:underline"
+                        >
+                            Dashboard
+                        </Link>
+                        <Link
+                            href="/admin/history"
+                            onClick={() => setMobileOpen(false)}
+                            className="block ml-4 hover:underline"
+                        >
+                            Entry History
+                        </Link>
+                    </div>
+
                     <ThemeToggle />
                 </div>
             </motion.div>
