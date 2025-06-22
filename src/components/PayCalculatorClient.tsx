@@ -22,6 +22,9 @@ export default function PayCalculatorClient() {
     const [formKey, setFormKey] = useState(0);
     const resultsRef = useRef<HTMLDivElement>(null);
 
+    /* ─────────────────────────────────────────────────────────
+       1.  LOAD ENTRY DATA (unchanged)
+    ──────────────────────────────────────────────────────────*/
     useEffect(() => {
         if (!editId) {
             setInitialValues(undefined);
@@ -30,46 +33,58 @@ export default function PayCalculatorClient() {
         const loadEntry = async () => {
             try {
                 const res = await fetch(`/api/entries/${editId}`);
-                if (!res.ok) {
-                    throw new Error(`Failed to load entry: ${res.statusText}`);
-                }
+                if (!res.ok) throw new Error(`Failed to load entry: ${res.statusText}`);
+
                 const raw = (await res.json()) as {
                     days: unknown;
                     hasPension: boolean;
                     hasUnionDues: boolean;
                 };
-                if (!Array.isArray(raw.days)) {
-                    throw new Error('Invalid data format: days is not an array');
-                }
-                const daysArray = raw.days as Array<unknown>;
+
+                if (!Array.isArray(raw.days)) throw new Error('Invalid data format');
+
                 const mappedDays: DayEntry[] = DAYS.map((_, i) => {
-                    const item = daysArray[i] as Partial<Record<keyof DayEntry, unknown>>;
+                    const d = (raw.days as Partial<DayEntry>[])[i] ?? {};
                     return {
-                        scheduledStart: typeof item.scheduledStart === 'string' ? item.scheduledStart : '',
-                        scheduledEnd: typeof item.scheduledEnd === 'string' ? item.scheduledEnd : '',
-                        actualStart: typeof item.actualStart === 'string' ? item.actualStart : '',
-                        actualEnd: typeof item.actualEnd === 'string' ? item.actualEnd : '',
-                        breakMinutes: typeof item.breakMinutes === 'number'
-                            ? item.breakMinutes
-                            : DEFAULT_BREAK_MINUTES,
-                        isHoliday: Boolean(item.isHoliday),
-                        isBump: Boolean(item.isBump),
-                        lieuHoursUsed: typeof item.lieuHoursUsed === 'number' ? item.lieuHoursUsed : 0,
+                        scheduledStart: typeof d.scheduledStart === 'string' ? d.scheduledStart : '',
+                        scheduledEnd: typeof d.scheduledEnd === 'string' ? d.scheduledEnd : '',
+                        actualStart: typeof d.actualStart === 'string' ? d.actualStart : '',
+                        actualEnd: typeof d.actualEnd === 'string' ? d.actualEnd : '',
+                        breakMinutes:
+                            typeof d.breakMinutes === 'number' ? d.breakMinutes : DEFAULT_BREAK_MINUTES,
+                        isHoliday: !!d.isHoliday,
+                        isBump: !!d.isBump,
+                        lieuHoursUsed: typeof d.lieuHoursUsed === 'number' ? d.lieuHoursUsed : 0,
                     };
                 });
+
                 setInitialValues({
                     days: mappedDays,
                     hasPension: raw.hasPension,
                     hasUnionDues: raw.hasUnionDues,
                 });
-                setFormKey(k => k + 1);
-            } catch (error) {
-                console.error(error instanceof Error ? error.message : 'Unknown error');
+                setFormKey(k => k + 1); // force form re-mount
+            } catch (err) {
+                console.error(err);
             }
         };
         void loadEntry();
     }, [editId]);
 
+    /* ─────────────────────────────────────────────────────────
+       2.  AUTO-CALCULATE WHEN INITIAL VALUES POPULATE  ← NEW
+    ──────────────────────────────────────────────────────────*/
+    useEffect(() => {
+        if (!initialValues) return;
+        startTransition(async () => {
+            const res = await calculatePayAction(initialValues);
+            setResult(res);
+        });
+    }, [initialValues, startTransition]);
+
+    /* ─────────────────────────────────────────────────────────
+       3.  HANDLE FORM SUBMIT (unchanged)
+    ──────────────────────────────────────────────────────────*/
     const handleFormSubmit = (values: WeeklyPayInput) => {
         startTransition(async () => {
             try {
@@ -92,13 +107,12 @@ export default function PayCalculatorClient() {
         setFormKey(k => k + 1);
     };
 
+    /* ─────────────────────────────────────────────────────────
+       4.  RENDER
+    ──────────────────────────────────────────────────────────*/
     return (
         <>
-            <WeeklyPayForm
-                key={formKey}
-                onSubmit={handleFormSubmit}
-                initialValues={initialValues}
-            />
+            <WeeklyPayForm key={formKey} onSubmit={handleFormSubmit} initialValues={initialValues} />
 
             {pending && (
                 <div className="text-center text-gray-500">
