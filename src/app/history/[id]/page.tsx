@@ -5,13 +5,13 @@ import { getDb } from "@/lib/mongodb";
 import { calculateWeeklyPay } from "@/lib/payUtils";
 import type { WeeklyPayInput, DayEntry } from "@/lib/payUtils";
 import ResultsDisplay from "@/components/ResultsDisplay";
+import Link from "next/link";
 import type { ReactElement } from "react";
 
-interface Params {
+interface PageProps {
     params: { id: string };
 }
 
-// Hard-code the labels to match your form
 const DAYS = [
     "Monday",
     "Tuesday",
@@ -22,10 +22,10 @@ const DAYS = [
     "Sunday",
 ];
 
-export default async function EntryDetailPage({
-    params: { id },
-}: Params): Promise<ReactElement> {
-    // 1️⃣ Fetch the raw document from Mongo
+export default async function EntryDetailPage(
+    { params: { id } }: PageProps
+): Promise<ReactElement> {
+    // Fetch the saved entry from MongoDB
     const db = await getDb();
     const raw = await db
         .collection("shiftEntries")
@@ -35,7 +35,7 @@ export default async function EntryDetailPage({
         return notFound();
     }
 
-    // 2️⃣ Re-run the pay calculation
+    // Re-run calculation using saved values
     const values: WeeklyPayInput = {
         days: raw.days as DayEntry[],
         hasPension: raw.hasPension,
@@ -44,18 +44,30 @@ export default async function EntryDetailPage({
     const result = calculateWeeklyPay(values);
 
     return (
-        <main className="max-w-2xl mx-auto px-4 py-10 space-y-8 text-[var(--foreground)] min-h-screen">
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-center font-poppins">
-                Week Details
-            </h1>
+        <main className="min-h-screen max-w-2xl mx-auto px-4 py-10 space-y-8 text-[var(--foreground)]">
+            {/* Header with Back & Edit buttons */}
+            <div className="flex justify-between items-center">
+                <h1 className="text-3xl sm:text-4xl font-extrabold text-center font-poppins">
+                    Week Details
+                </h1>
+                <div className="space-x-2">
+                    <Link href="/history" className="btn btn-sm btn-outline">
+                        Back
+                    </Link>
+                    <Link href={`/pay?editId=${id}`} className="btn btn-sm btn-primary">
+                        Edit in Calculator
+                    </Link>
+                </div>
+            </div>
+
+            {/* Timestamp */}
             <p className="text-center text-sm opacity-70">
                 {new Date(raw.createdAt).toLocaleString()}
             </p>
 
-            {/* ———————————————————————————————————————— */}
-            {/* Input Data Table (uses raw.days to show your original times) */}
-            <section className="bg-[var(--color-neutral)] dark:bg-[var(--color-neutral-dark)] rounded-lg shadow p-4">
-                <h2 className="font-semibold text-lg mb-2 text-[var(--foreground)]">
+            {/* Daily Entries Table */}
+            <section className="bg-[var(--color-neutral)] dark:bg-[var(--color-neutral-dark)] rounded-lg shadow p-6">
+                <h2 className="text-lg font-semibold text-[var(--foreground)] mb-2">
                     Daily Entries
                 </h2>
                 <div className="overflow-x-auto">
@@ -77,12 +89,8 @@ export default async function EntryDetailPage({
                                 return (
                                     <tr key={idx}>
                                         <td>{label}</td>
-                                        <td>
-                                            {d.scheduledStart}–{d.scheduledEnd}
-                                        </td>
-                                        <td>
-                                            {(d.actualStart || "--:--")}–{(d.actualEnd || "--:--")}
-                                        </td>
+                                        <td>{d.scheduledStart}–{d.scheduledEnd}</td>
+                                        <td>{d.actualStart || "--:--"}–{d.actualEnd || "--:--"}</td>
                                         <td>{d.breakMinutes} min</td>
                                         <td>{d.isHoliday ? "Yes" : "No"}</td>
                                         <td>{d.isBump ? "Yes" : "No"}</td>
@@ -95,7 +103,6 @@ export default async function EntryDetailPage({
                 </div>
             </section>
 
-            {/* ———————————————————————————————————————— */}
             {/* Computed Pay Breakdown */}
             <ResultsDisplay result={result} />
         </main>
