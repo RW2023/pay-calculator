@@ -83,7 +83,7 @@ export default function PayCalculatorClient() {
     }, [initialValues, startTransition]);
 
     /* ─────────────────────────────────────────────────────────
-       3.  HANDLE FORM SUBMIT (unchanged)
+       3.  HANDLE FORM SUBMIT 
     ──────────────────────────────────────────────────────────*/
     const handleFormSubmit = (values: WeeklyPayInput) => {
         startTransition(async () => {
