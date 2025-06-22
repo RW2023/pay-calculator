@@ -1,6 +1,7 @@
 // components/EntryHistory.tsx
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 interface DayEntry {
@@ -31,9 +32,9 @@ export default function EntryHistory() {
         fetch("/api/entries?limit=10")
             .then(async (res) => {
                 if (!res.ok) throw new Error(await res.text());
-                return res.json();
+                return res.json() as Promise<Entry[]>;
             })
-            .then((data: Entry[]) => setEntries(data))
+            .then(setEntries)
             .catch((err) => {
                 console.error(err);
                 setError(err.message);
@@ -41,29 +42,30 @@ export default function EntryHistory() {
             .finally(() => setLoading(false));
     }, []);
 
-    if (loading) return <p>Loading history…</p>;
-    if (error) return <p className="text-red-500">Error: {error}</p>;
-    if (entries.length === 0) return <p>No saved entries yet.</p>;
+    if (loading) return <p className="text-[var(--foreground)]">Loading history…</p>;
+    if (error) return <p className="text-[var(--foreground)] opacity-70">Error: {error}</p>;
+    if (entries.length === 0) return <p className="text-[var(--foreground)] opacity-70">No saved entries yet.</p>;
 
     return (
         <div className="space-y-4">
-            <h2 className="text-xl font-semibold">Saved Pay Weeks</h2>
+            <h2 className="text-xl font-semibold text-[var(--foreground)]">Saved Pay Weeks</h2>
             <ul className="space-y-2">
                 {entries.map((e) => {
                     const date = new Date(e.createdAt);
                     return (
-                        <li key={e._id} className="p-4 bg-base-100 rounded-lg shadow">
-                            <div className="flex justify-between">
-                                <span>
-                                    <strong>{date.toLocaleString()}</strong>
-                                </span>
-                                <span>
-                                    {e.days.length} day{e.days.length > 1 && "s"}
-                                </span>
-                            </div>
-                            <div className="mt-2 text-sm text-gray-600">
-                                Pension: {e.hasPension ? "Yes" : "No"}, Union Dues: {e.hasUnionDues ? "Yes" : "No"}
-                            </div>
+                        <li key={e._id}>
+                            <Link
+                                href={`/history/${e._id}`}
+                                className="block p-4 rounded-lg shadow bg-[var(--color-neutral)] dark:bg-[var(--color-neutral-dark)] hover:shadow-md transition"
+                            >
+                                <div className="flex justify-between text-[var(--foreground)]">
+                                    <span><strong>{date.toLocaleString()}</strong></span>
+                                    <span>{e.days.length} day{e.days.length > 1 && 's'}</span>
+                                </div>
+                                <div className="mt-2 text-sm text-[var(--foreground)] opacity-70">
+                                    Pension: {e.hasPension ? "Yes" : "No"}, Union Dues: {e.hasUnionDues ? "Yes" : "No"}
+                                </div>
+                            </Link>
                         </li>
                     );
                 })}
@@ -71,4 +73,3 @@ export default function EntryHistory() {
         </div>
     );
 }
-
