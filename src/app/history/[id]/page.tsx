@@ -6,11 +6,6 @@ import { calculateWeeklyPay } from "@/lib/payUtils";
 import type { WeeklyPayInput, DayEntry } from "@/lib/payUtils";
 import ResultsDisplay from "@/components/ResultsDisplay";
 import Link from "next/link";
-import type { ReactElement } from "react";
-
-interface PageProps {
-    params: { id: string };
-}
 
 const DAYS = [
     "Monday",
@@ -22,20 +17,20 @@ const DAYS = [
     "Sunday",
 ];
 
-export default async function EntryDetailPage(
-    { params: { id } }: PageProps
-): Promise<ReactElement> {
-    // Fetch the saved entry from MongoDB
-    const db = await getDb();
-    const raw = await db
-        .collection("shiftEntries")
-        .findOne({ _id: new ObjectId(id) });
+export default async function EntryDetailPage({ params }: { params: { id: string } }) {
+    const { id } = params;
 
-    if (!raw) {
+    let raw;
+    try {
+        const db = await getDb();
+        raw = await db.collection("shiftEntries").findOne({ _id: new ObjectId(id) });
+    } catch (err) {
+        console.error("Error fetching entry:", err);
         return notFound();
     }
 
-    // Re-run calculation using saved values
+    if (!raw) return notFound();
+
     const values: WeeklyPayInput = {
         days: raw.days as DayEntry[],
         hasPension: raw.hasPension,
@@ -45,42 +40,25 @@ export default async function EntryDetailPage(
 
     return (
         <main className="min-h-screen max-w-2xl mx-auto px-4 py-10 space-y-8 text-[var(--foreground)]">
-            {/* Header with Back & Edit buttons */}
             <div className="flex justify-between items-center">
-                <h1 className="text-3xl sm:text-4xl font-extrabold text-center font-poppins">
-                    Week Details
-                </h1>
+                <h1 className="text-3xl sm:text-4xl font-extrabold font-poppins">Week Details</h1>
                 <div className="space-x-2">
-                    <Link href="/history" className="btn btn-sm btn-outline m-1">
-                        Back
-                    </Link>
-                    <Link href={`/pay?editId=${id}`} className="btn btn-sm btn-primary m-1">
-                        Edit in Calculator
-                    </Link>
+                    <Link href="/history" className="btn btn-sm btn-outline">Back</Link>
+                    <Link href={`/pay?editId=${id}`} className="btn btn-sm btn-primary">Edit in Calculator</Link>
                 </div>
             </div>
 
-            {/* Timestamp */}
             <p className="text-center text-sm opacity-70">
                 {new Date(raw.createdAt).toLocaleString()}
             </p>
 
-            {/* Daily Entries Table */}
             <section className="bg-[var(--color-neutral)] dark:bg-[var(--color-neutral-dark)] rounded-lg shadow p-6">
-                <h2 className="text-lg font-semibold text-[var(--foreground)] mb-2">
-                    Daily Entries
-                </h2>
+                <h2 className="text-lg font-semibold text-[var(--foreground)] mb-2">Daily Entries</h2>
                 <div className="overflow-x-auto">
                     <table className="table w-full text-[var(--foreground)]">
                         <thead>
                             <tr>
-                                <th>Day</th>
-                                <th>Scheduled</th>
-                                <th>Actual</th>
-                                <th>Break</th>
-                                <th>Holiday</th>
-                                <th>BUMP</th>
-                                <th>Lieu Used</th>
+                                <th>Day</th><th>Scheduled</th><th>Actual</th><th>Break</th><th>Holiday</th><th>BUMP</th><th>Lieu Used</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -103,7 +81,6 @@ export default async function EntryDetailPage(
                 </div>
             </section>
 
-            {/* Computed Pay Breakdown */}
             <ResultsDisplay result={result} />
         </main>
     );
