@@ -53,7 +53,7 @@ export default function Navbar() {
                                 <Link href="/admin">Dashboard</Link>
                             </li>
                             <li>
-                                <Link href="/admin/history">Entry History</Link>
+                                <Link href="/history">Entry History</Link>
                             </li>
                         </ul>
                     </div>
