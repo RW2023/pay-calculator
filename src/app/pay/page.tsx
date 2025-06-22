@@ -1,64 +1,83 @@
+// src/app/pay/page.tsx
 'use client';
 
-import { useRef, useState, useTransition, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
-import WeeklyPayForm, { WeeklyPayInput } from "@/components/WeeklyPayForm";
-import ResultsDisplay from "@/components/ResultsDisplay";
-import PrintButton from "@/components/PrintButton";
-import type { WeeklyPayResult } from "@/lib/payUtils";
-import { calculatePayAction } from "@/app/actions/calculatePay";
+import { useRef, useState, useTransition, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
+import WeeklyPayForm, { WeeklyPayInput } from '@/components/WeeklyPayForm';
+import type { DayEntry } from '@/lib/payUtils';
+import ResultsDisplay from '@/components/ResultsDisplay';
+import PrintButton from '@/components/PrintButton';
+import type { WeeklyPayResult } from '@/lib/payUtils';
+import { calculatePayAction } from '@/app/actions/calculatePay';
+
+const DEFAULT_BREAK_MINUTES = 30;
 
 export default function PayCalculatorPage() {
     const searchParams = useSearchParams();
-    const editId = searchParams.get("editId") ?? undefined;
+    const editId = searchParams.get('editId') ?? undefined;
 
-    const [initialValues, setInitialValues] = useState<WeeklyPayInput>();
+    const [initialValues, setInitialValues] = useState<WeeklyPayInput | undefined>(undefined);
     const [result, setResult] = useState<WeeklyPayResult | null>(null);
     const [pending, startTransition] = useTransition();
     const [formKey, setFormKey] = useState(0);
     const resultsRef = useRef<HTMLDivElement>(null);
 
-    // Load saved week when ?editId= is present
+    // Fetch saved entry when editId changes
     useEffect(() => {
-        if (editId) {
-            fetch(`/api/entries/${editId}`)
-                .then(async (res) => {
-                    if (!res.ok) throw new Error(await res.text());
-                    return res.json() as Promise<WeeklyPayInput & { createdAt: string }>;
-                })
-                .then((entry) => {
-                    setInitialValues({
-                        days: entry.days,
-                        hasPension: entry.hasPension,
-                        hasUnionDues: entry.hasUnionDues,
-                    });
-                    // remount form to pick up new initialValues
-                    setFormKey((k) => k + 1);
-                })
-                .catch((err) => {
-                    console.error("Failed to load entry for edit:", err);
-                });
+        if (!editId) {
+            setInitialValues(undefined);
+            return;
         }
+        (async () => {
+            try {
+                const res = await fetch(`/api/entries/${editId}`);
+                if (!res.ok) throw new Error(await res.text());
+                const entry = await res.json() as {
+                    days: DayEntry[];
+                    hasPension: boolean;
+                    hasUnionDues: boolean;
+                };
+                // Map raw days to DayEntry shape
+                const mappedDays: DayEntry[] = entry.days.map((d) => ({
+                    scheduledStart: d.scheduledStart ?? '',
+                    scheduledEnd: d.scheduledEnd ?? '',
+                    actualStart: d.actualStart ?? '',
+                    actualEnd: d.actualEnd ?? '',
+                    breakMinutes: typeof d.breakMinutes === 'number' ? d.breakMinutes : DEFAULT_BREAK_MINUTES,
+                    isHoliday: Boolean(d.isHoliday),
+                    isBump: Boolean(d.isBump),
+                    lieuHoursUsed: typeof d.lieuHoursUsed === 'number' ? d.lieuHoursUsed : 0,
+                }));
+                setInitialValues({
+                    days: mappedDays,
+                    hasPension: entry.hasPension,
+                    hasUnionDues: entry.hasUnionDues,
+                });
+                // remount form to apply initialValues
+                setFormKey(k => k + 1);
+            } catch (err: unknown) {
+                console.error('Failed to load entry for edit:', err);
+            }
+        })();
     }, [editId]);
 
-    // Submit: re-save (snapshot) + calculate
-    function handleFormSubmit(values: WeeklyPayInput) {
+    const handleFormSubmit = (values: WeeklyPayInput) => {
         startTransition(async () => {
-            // optional: snapshot new version
-            await fetch("/api/entries", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
+            // Optionally snapshot a new version
+            await fetch('/api/entries', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(values),
             });
             const res = await calculatePayAction(values);
             setResult(res);
         });
-    }
+    };
 
     const handleReset = () => {
         setResult(null);
         setInitialValues(undefined);
-        setFormKey((k) => k + 1);
+        setFormKey(k => k + 1);
     };
 
     return (
@@ -75,7 +94,7 @@ export default function PayCalculatorPage() {
 
             {pending && (
                 <div className="text-center text-gray-500">
-                    {editId ? "Loading & saving…" : "Calculating…"}
+                    {editId ? 'Loading & calculating…' : 'Calculating…'}
                 </div>
             )}
 
