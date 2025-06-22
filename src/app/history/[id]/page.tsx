@@ -51,10 +51,10 @@ export default async function EntryDetailPage(
                     Week Details
                 </h1>
                 <div className="space-x-2">
-                    <Link href="/history" className="btn btn-sm btn-outline">
+                    <Link href="/history" className="btn btn-sm btn-outline m-1">
                         Back
                     </Link>
-                    <Link href={`/pay?editId=${id}`} className="btn btn-sm btn-primary">
+                    <Link href={`/pay?editId=${id}`} className="btn btn-sm btn-primary m-1">
                         Edit in Calculator
                     </Link>
                 </div>
