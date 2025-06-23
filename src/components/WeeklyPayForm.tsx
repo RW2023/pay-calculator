@@ -1,13 +1,9 @@
-// components/WeeklyPayForm.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
 import type { DayEntry } from '@/lib/payUtils';
 
-const DAYS = [
-    "Monday", "Tuesday", "Wednesday", "Thursday",
-    "Friday", "Saturday", "Sunday",
-];
+const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 export type WeeklyPayInput = {
     days: DayEntry[];
@@ -20,10 +16,7 @@ type WeeklyPayFormProps = {
     initialValues: WeeklyPayInput | undefined;
 };
 
-export default function WeeklyPayForm({
-    onSubmit,
-    initialValues,
-}: WeeklyPayFormProps) {
+export default function WeeklyPayForm({ onSubmit, initialValues }: WeeklyPayFormProps) {
     const defaultDays: DayEntry[] = DAYS.map(() => ({
         scheduledStart: '21:00',
         scheduledEnd: '05:30',
@@ -47,21 +40,15 @@ export default function WeeklyPayForm({
         }
     }, [initialValues]);
 
-    const safeTime = (val: string | undefined) =>
-        typeof val === 'string' ? val : '';
+    const safeTime = (val: string | undefined) => (typeof val === 'string' ? val : '');
 
     return (
         <form
-            className="
-        bg-[var(--background)] text-[var(--foreground)]
-        rounded-2xl shadow p-4 sm:p-6
-        flex flex-col gap-6
-        transition-colors duration-300
-      "
             onSubmit={e => {
                 e.preventDefault();
                 onSubmit({ days, hasPension, hasUnionDues });
             }}
+            className="bg-[var(--background)] text-[var(--foreground)] rounded-2xl shadow p-4 sm:p-6 flex flex-col gap-6 transition-colors duration-300"
             aria-label="Weekly Pay Input Form"
             autoComplete="off"
         >
@@ -84,7 +71,7 @@ export default function WeeklyPayForm({
                         {DAYS.map((label, idx) => {
                             const day = days[idx] ?? defaultDays[idx]!;
                             return (
-                                <tr key={label} className="odd:bg-[var(--background)] even:bg-[var(--background)]">
+                                <tr key={label} className="even:bg-muted/20">
                                     <th scope="row" className="font-semibold">{label}</th>
                                     <td>
                                         <input
