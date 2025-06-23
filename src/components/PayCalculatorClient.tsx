@@ -1,3 +1,4 @@
+// components/PayCalculatorClient.tsx
 'use client';
 
 import { useRef, useState, useTransition, useEffect } from 'react';
@@ -54,12 +55,8 @@ export default function PayCalculatorClient() {
                     };
                 });
 
-                setInitialValues({
-                    days: mappedDays,
-                    hasPension: raw.hasPension,
-                    hasUnionDues: raw.hasUnionDues,
-                });
-                setFormKey(k => k + 1); // force re-mount
+                setInitialValues({ days: mappedDays, hasPension: raw.hasPension, hasUnionDues: raw.hasUnionDues });
+                setFormKey(k => k + 1);
             } catch (err) {
                 console.error(err);
             }
@@ -95,38 +92,40 @@ export default function PayCalculatorClient() {
         });
     };
 
+    /* 4. Reset handler */
     const handleReset = () => {
         setResult(null);
         setInitialValues(undefined);
         setFormKey(k => k + 1);
     };
 
-    /* 4. Render */
     return (
-        <div className="space-y-8">
+        <section className="space-y-8" aria-labelledby="weekly-pay-form-heading">
+            <h2 id="weekly-pay-form-heading" className="sr-only">Weekly Pay Calculator</h2>
+
             {/* Form card */}
             <div className="p-6 rounded-lg shadow bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300">
-                <WeeklyPayForm
-                    key={formKey}
-                    onSubmit={handleFormSubmit}
-                    initialValues={initialValues}
-                />
+                <WeeklyPayForm key={formKey} onSubmit={handleFormSubmit} initialValues={initialValues} />
             </div>
 
             {/* Pending indicator */}
             {pending && (
-                <div className="text-center opacity-60 text-[var(--foreground)]">
+                <div role="status" aria-live="polite" className="text-center opacity-60 text-[var(--foreground)]">
                     {editId ? 'Loading & calculating…' : 'Calculating…'}
                 </div>
             )}
 
             {/* Results */}
             {result && (
-                <section className="space-y-4">
+                <section className="space-y-4" aria-labelledby="results-heading">
+                    <h2 id="results-heading" className="sr-only">Calculation Results</h2>
+
                     <div className="flex justify-end gap-2">
                         <PrintButton targetRef={resultsRef} />
                         <button
+                            type="button"
                             onClick={handleReset}
+                            aria-label="Reset all fields"
                             className="btn btn-outline btn-neutral btn-sm"
                         >
                             Reset All
@@ -141,6 +140,6 @@ export default function PayCalculatorClient() {
                     </div>
                 </section>
             )}
-        </div>
+        </section>
     );
 }
