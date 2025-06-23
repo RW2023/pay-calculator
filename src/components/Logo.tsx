@@ -20,9 +20,9 @@ export const Logo: React.FC<LogoProps> = ({ size = 64 }) => (
         <defs>
             <linearGradient id="dollarGradient" x1="0%" y1="0%" x2="0%" y2="100%">
                 {/* Top: a bright sunset orange */}
-                <stop offset="0%" stopColor="#ff6a00" />
+                <stop offset="0%" stopColor="var(--color-logo-start)" />
                 {/* Bottom: a vivid magenta */}
-                <stop offset="100%" stopColor="#ee0979" />
+                <stop offset="100%" stopColor="var(--color-logo-end)" />
             </linearGradient>
         </defs>
 

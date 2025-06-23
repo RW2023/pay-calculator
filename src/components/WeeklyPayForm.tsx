@@ -251,7 +251,11 @@ export default function WeeklyPayForm({
                     />
                     Union Dues
                 </label>
-                <button type="submit" className="btn btn-primary ml-auto px-8" aria-label="Calculate weekly pay">
+                <button
+                    type="submit"
+                    className="btn ml-auto px-8 bg-[var(--color-teal)] text-white hover:opacity-90"
+                    aria-label="Calculate weekly pay"
+                >
                     Calculate
                 </button>
             </div>

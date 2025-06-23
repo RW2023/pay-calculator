@@ -47,7 +47,7 @@ export default function Navbar() {
                         </button>
                         <ul
                             tabIndex={0}
-                            className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-48"
+                            className="dropdown-content menu p-2 shadow rounded-box w-48 bg-[var(--color-neutral)] dark:bg-[var(--color-neutral-dark)]"
                         >
                             <li>
                                 <Link href="/admin">Dashboard</Link>

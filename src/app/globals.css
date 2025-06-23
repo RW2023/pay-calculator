@@ -19,6 +19,8 @@
   --color-teal-dark: #005F5A;
   --color-neutral: #F2F2F2;
   --color-neutral-dark: #333333;
+  --color-logo-start: #ff6a00;
+  --color-logo-end: #ee0979;
 }
 
 /* ===== Dark Theme: Next-themes uses .dark class on <html> ===== */
@@ -38,6 +40,8 @@ html.dark,
   /* swap to a dark neutral for surfaces */
   --color-neutral-dark: #f2f2f2;
   /* swap to light for text/icons on dark */
+  --color-logo-start: #ff8c00;
+  --color-logo-end: #ff1c86;
 }
 
 /* ====== Typography and Base ====== */

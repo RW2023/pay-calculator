@@ -43,8 +43,18 @@ export default async function EntryDetailPage({ params }: { params: { id: string
             <div className="flex justify-between items-center">
                 <h1 className="text-3xl sm:text-4xl font-extrabold font-poppins">Week Details</h1>
                 <div className="space-x-2">
-                    <Link href="/history" className="btn btn-sm btn-outline m-1">Back</Link>
-                    <Link href={`/pay?editId=${id}`} className="btn btn-sm btn-primary m-1">Edit in Calculator</Link>
+                    <Link
+                        href="/history"
+                        className="btn btn-sm m-1 border border-[var(--color-teal)] text-[var(--color-teal)] bg-transparent hover:bg-[var(--color-neutral)]"
+                    >
+                        Back
+                    </Link>
+                    <Link
+                        href={`/pay?editId=${id}`}
+                        className="btn btn-sm m-1 bg-[var(--color-teal)] text-white hover:opacity-90"
+                    >
+                        Edit in Calculator
+                    </Link>
                 </div>
             </div>
 

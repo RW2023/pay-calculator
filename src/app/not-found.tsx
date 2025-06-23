@@ -12,7 +12,7 @@ export default function NotFound() {
             role="main"
             className="h-screen flex items-center justify-center bg-[var(--background)] px-4"
         >
-            <div className="card bg-base-100 shadow-xl rounded-2xl max-w-md text-center p-8">
+            <div className="card rounded-2xl max-w-md text-center p-8 bg-[var(--color-neutral)] dark:bg-[var(--color-neutral-dark)] shadow-xl">
                 <AlertCircle
                     size={64}
                     className="mx-auto mb-4 text-[var(--color-teal)]"
@@ -27,7 +27,7 @@ export default function NotFound() {
                 <div className="flex justify-center gap-4">
                     <button
                         onClick={() => router.back()}
-                        className="btn btn-outline flex items-center gap-2"
+                        className="btn flex items-center gap-2 border border-[var(--color-teal)] text-[var(--color-teal)] bg-transparent hover:bg-[var(--color-neutral)]"
                         aria-label="Go back to previous page"
                     >
                         <ArrowLeft size={20} />
@@ -35,7 +35,7 @@ export default function NotFound() {
                     </button>
                     <Link href="/" passHref>
                         <button
-                            className="btn btn-primary flex items-center gap-2"
+                            className="btn flex items-center gap-2 bg-[var(--color-teal)] text-white hover:opacity-90"
                             aria-label="Go to home page"
                         >
                             <Home size={20} />
