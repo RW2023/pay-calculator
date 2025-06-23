@@ -1,119 +1,60 @@
-/* globals.css */
-
 @import "tailwindcss";
 @plugin "daisyui";
 
-/* ───────────── 1. Light-mode palette ───────────── */
+/* ─────────────────────────────────────── */
+/*            Light Theme Defaults         */
+/* ─────────────────────────────────────── */
 :root {
-  /* semantic palette – H S L triplets only */
-  --color-primary: 210 50% 40%;
-  --color-accent: 30 80% 60%;
-  --color-olive: 90 50% 30%;
-  --color-teal: 175 80% 35%;
-  --color-teal-dark: 175 60% 20%;
-  --color-neutral: 220 10% 95%;
-  --color-neutral-dark: 220 10% 15%;
-
-  /* UI fundamentals */
   --background: #ffffff;
   --foreground: #171717;
+
+  --card-bg: #f8f8f8;
+  --border: hsl(220, 15%, 80%);
+
+  --primary: hsl(143, 60%, 35%);
+  --secondary: hsl(20, 80%, 45%);
+  --accent: hsl(48, 90%, 55%);
+  --muted: hsl(220, 20%, 85%);
+
+  --font-sans: 'Karla', sans-serif;
+  --font-heading: 'Londrina Solid', cursive;
+  --font-mono: 'Geist Mono', monospace;
 }
 
-/* ───────────── 2. Dark-mode overrides ───────────── */
-html.dark {
+/* ─────────────────────────────────────── */
+/*              Dark Mode                  */
+/* ─────────────────────────────────────── */
+.dark {
   --background: #0a0a0a;
   --foreground: #ededed;
 
-  /* tweak palette if you want different tints in dark mode:
-     --color-accent: 30 80% 70%; */
+  --card-bg: #121212;
+  --border: hsl(220, 15%, 25%);
+
+  --primary: hsl(143, 60%, 45%);
+  --secondary: hsl(12, 80%, 60%);
+  --accent: hsl(48, 90%, 65%);
+  --muted: hsl(220, 20%, 20%);
 }
 
-/* ───────────── 3. Utility palette (global) ───────────── */
-/* These classes bypass Tailwind’s colour utilities so you
-   never have to fight purge/JIT for dynamic class strings. */
-
-.text-olive {
-  color: hsl(var(--color-olive));
+/* ─────────────────────────────────────── */
+/*      Tailwind Inline Theme Mapping      */
+/* ─────────────────────────────────────── */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --font-body: var(--font-sans);
+  --font-heading: var(--font-heading);
 }
 
-.border-olive {
-  border-color: hsl(var(--color-olive));
+/* ─────────────────────────────────────── */
+/*            Base Element Styles          */
+/* ─────────────────────────────────────── */
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
 }
-
-.bg-olive {
-  background-color: hsl(var(--color-olive));
-}
-
-.text-teal {
-  color: hsl(var(--color-teal));
-}
-
-.border-teal {
-  border-color: hsl(var(--color-teal));
-}
-
-.bg-teal {
-  background-color: hsl(var(--color-teal));
-}
-
-.text-teal-dark {
-  color: hsl(var(--color-teal-dark));
-}
-
-.border-teal-dark {
-  border-color: hsl(var(--color-teal-dark));
-}
-
-.bg-teal-dark {
-  background-color: hsl(var(--color-teal-dark));
-}
-
-.text-accent {
-  color: hsl(var(--color-accent));
-}
-
-.border-accent {
-  border-color: hsl(var(--color-accent));
-}
-
-.bg-accent {
-  background-color: hsl(var(--color-accent));
-}
-
-.text-primary {
-  color: hsl(var(--color-primary));
-}
-
-.border-primary {
-  border-color: hsl(var(--color-primary));
-}
-
-.bg-primary {
-  background-color: hsl(var(--color-primary));
-}
-
-.text-neutral-dark {
-  color: hsl(var(--color-neutral-dark));
-}
-
-.border-neutral-dark {
-  border-color: hsl(var(--color-neutral-dark));
-}
-
-.bg-neutral-dark {
-  background-color: hsl(var(--color-neutral-dark));
-}
-
-.text-neutral {
-  color: hsl(var(--color-neutral));
-}
-
-.border-neutral {
-  border-color: hsl(var(--color-neutral));
-}
-
-.bg-neutral {
-  background-color: hsl(var(--color-neutral));
-}
-
-/* Add more semantic aliases here (badge-… etc.) if needed */

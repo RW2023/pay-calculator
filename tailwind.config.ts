@@ -1,25 +1,19 @@
-// tailwind.config.ts
-import type { Config } from 'tailwindcss'
-
-const config: Config = {
+/** @type {import('tailwindcss').Config} */
+const config = {
   content: [
     './app/**/*.{js,ts,jsx,tsx}',
     './components/**/*.{js,ts,jsx,tsx}',
   ],
-  darkMode: 'class',     // ← use the string, not ['class']
+  darkMode: 'class',
   theme: {
     extend: {
-      colors: {
-        primary:       'hsl(var(--color-primary)/<alpha-value>)',
-        accent:        'hsl(var(--color-accent)/<alpha-value>)',
-        olive:         'hsl(var(--color-olive)/<alpha-value>)',
-        teal:          'hsl(var(--color-teal)/<alpha-value>)',
-        'teal-dark':   'hsl(var(--color-teal-dark)/<alpha-value>)',
-        neutral:       'hsl(var(--color-neutral)/<alpha-value>)',
-        'neutral-dark':'hsl(var(--color-neutral-dark)/<alpha-value>)',
+      fontFamily: {
+        body: ['var(--font-sans)', 'sans-serif'],
+        heading: ['var(--font-heading)', 'sans-serif'],
+        mono: ['var(--font-mono)', 'monospace'],
       },
     },
   },
-}
+};
 
-export default config
+export default config;
