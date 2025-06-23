@@ -22,38 +22,37 @@ export default function Navbar() {
             aria-label="Main menu"
             className="
         sticky top-0 z-50
+        border-b border-[var(--color-neutral)]/30
         bg-[var(--background)] text-[var(--foreground)]
-        border-b border-[var(--border)]
-        shadow-sm
+        dark:border-[var(--color-neutral)]/10
         transition-colors duration-300
       "
         >
-            <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-20">
-                {/* Logo */}
-                <Link href="/" className="flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary">
-                    <Logo size={60} />
-                    <span className="font-bold text-xl">PayCalc</span>
+            <div className="max-w-7xl mx-auto h-20 px-4 flex items-center justify-between">
+                {/* Brand */}
+                <Link href="/" className="flex items-center gap-2 group">
+                    <Logo size={44} />
+                    <span className="font-bold text-xl group-hover:opacity-80 transition-opacity">
+                        PayCalc
+                    </span>
                 </Link>
 
-                {/* Desktop */}
-                <div className="hidden lg:flex items-center space-x-6">
-                    {navItems.map(item => (
-                        <Link
-                            key={item.name}
-                            href={item.href}
-                            className="font-medium hover:underline focus:outline-none focus:underline"
-                        >
-                            {item.name}
-                        </Link>
+                {/* Desktop links */}
+                <ul className="hidden lg:flex items-center gap-6">
+                    {navItems.map((item) => (
+                        <li key={item.name}>
+                            <Link
+                                href={item.href}
+                                className="font-medium hover:text-[var(--color-teal)] transition-colors"
+                            >
+                                {item.name}
+                            </Link>
+                        </li>
                     ))}
 
-                    {/* Admin Dropdown */}
-                    <div className="dropdown dropdown-hover">
-                        <button
-                            tabIndex={0}
-                            aria-haspopup="true"
-                            className="font-medium hover:underline focus:outline-none"
-                        >
+                    {/* Admin dropdown */}
+                    <li className="dropdown dropdown-hover">
+                        <button tabIndex={0} className="font-medium hover:text-[var(--color-teal)]">
                             Admin
                         </button>
                         <ul
@@ -61,77 +60,67 @@ export default function Navbar() {
                             className="
                 dropdown-content menu p-2 shadow-md
                 bg-[var(--background)] text-[var(--foreground)]
+                dark:bg-[var(--color-neutral-dark)]
                 rounded-box w-48
-                ring-1 ring-[var(--border)]
               "
                         >
                             <li><Link href="/admin">Dashboard</Link></li>
                             <li><Link href="/history">Entry History</Link></li>
                         </ul>
-                    </div>
+                    </li>
 
                     <ThemeToggle />
-                </div>
+                </ul>
 
-                {/* Mobile Toggle */}
+                {/* Mobile toggle */}
                 <button
-                    title="Toggle mobile menu"
                     type="button"
-                    onClick={() => setMobileOpen(o => !o)}
-                    className="lg:hidden p-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                    aria-label="Toggle menu"
-                    aria-controls="mobile-menu"
+                    title="Toggle menu"
+                    onClick={() => setMobileOpen((v) => !v)}
+                    className="lg:hidden p-2"
+                    aria-label="Toggle navigation menu"
                     aria-expanded={mobileOpen}
                 >
                     {mobileOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
             </div>
 
-            {/* Mobile Panel */}
+            {/* Mobile panel */}
             <motion.div
                 id="mobile-menu"
+                initial={false}
+                animate={mobileOpen ? 'open' : 'closed'}
                 variants={{
                     open: { height: 'auto', opacity: 1, display: 'block' },
                     closed: { height: 0, opacity: 0, transitionEnd: { display: 'none' } },
                 }}
-                initial={false}
-                animate={mobileOpen ? 'open' : 'closed'}
-                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                transition={{ type: 'spring', stiffness: 280, damping: 30 }}
                 className="
-          lg:hidden overflow-hidden 
+          lg:hidden overflow-hidden border-t
+          border-[var(--color-neutral)]/20
           bg-[var(--background)] text-[var(--foreground)]
-          border-t border-[var(--border)]
         "
-                role="menu"
-                aria-hidden={!mobileOpen}
             >
                 <div className="px-4 py-6 space-y-4">
-                    {navItems.map(item => (
+                    {navItems.map((item) => (
                         <Link
                             key={item.name}
                             href={item.href}
-                            onClick={() => setMobileOpen(false)}
-                            className="block text-lg font-medium hover:underline focus:outline-none"
                             role="menuitem"
+                            onClick={() => setMobileOpen(false)}
+                            className="block text-lg font-medium hover:text-[var(--color-teal)] transition-colors"
                         >
                             {item.name}
                         </Link>
                     ))}
 
-                    <div className="pt-4 border-t border-[var(--border)] space-y-2">
+                    {/* Admin shortcuts */}
+                    <div className="pt-4 border-t border-[var(--color-neutral)]/20 space-y-2">
                         <span className="font-semibold">Admin</span>
-                        <Link
-                            href="/admin"
-                            onClick={() => setMobileOpen(false)}
-                            className="block ml-4 hover:underline focus:outline-none"
-                        >
+                        <Link href="/admin" onClick={() => setMobileOpen(false)} className="block ml-4 hover:text-[var(--color-teal)]">
                             Dashboard
                         </Link>
-                        <Link
-                            href="/history"
-                            onClick={() => setMobileOpen(false)}
-                            className="block ml-4 hover:underline focus:outline-none"
-                        >
+                        <Link href="/admin/history" onClick={() => setMobileOpen(false)} className="block ml-4 hover:text-[var(--color-teal)]">
                             Entry History
                         </Link>
                     </div>
