@@ -257,7 +257,7 @@ export default function WeeklyPayForm({ onSubmit, initialValues }: WeeklyPayForm
                 {/* Teal Calculate button */}
                 <button
                     type="submit"
-                    className="ml-auto px-8 py-2 font-semibold rounded-md shadow bg-[var(--color-teal)] text-[var(--background)] transition-colors duration-200 hover:bg-[var(--color-teal-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--color-teal-dark)]"
+                    className="ml-auto px-8 py-2 font-semibold rounded-md shadow bg-[var(--color-teal)] text-[var(--background)] hover:bg-[var(--color-teal-dark)] dark:bg-[var(--color-neutral-dark)] dark:hover:bg-[var(--color-neutral)] focus:outline-none focus:ring-2 focus:ring-[var(--color-teal-dark)] transition-colors duration-300"
                 >
                     Calculate
                 </button>

@@ -16,18 +16,7 @@ export default function SupportSection() {
             </p>
         <Link
             href="/contact"
-            className="
-                inline-block
-                font-karla
-                text-white
-                text-base
-                px-6 py-3
-                rounded-lg
-                shadow
-                bg-[var(--color-teal)]
-                hover:bg-[var(--color-olive)]
-                transition-colors duration-200
-            "
+            className="inline-block font-karla text-[var(--background)] dark:text-[var(--foreground)] text-base px-6 py-3 rounded-lg shadow bg-[var(--color-teal)] hover:bg-[var(--color-olive)] transition-colors duration-200"
         >
             Contact Me
         </Link>
