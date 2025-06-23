@@ -37,7 +37,7 @@ export default function ThemeToggle() {
         <button
             onClick={handleToggle}
             aria-label="Toggle theme"
-            className="p-2 rounded-full border border-gray-300 dark:border-gray-600 transition duration-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+            className="p-2 rounded-full border border-[var(--color-neutral-dark)] dark:border-[var(--color-neutral)] transition duration-300 hover:bg-[var(--color-neutral)] dark:hover:bg-[var(--color-neutral-dark)]"
         >
             <Icon className="w-5 h-5" />
         </button>

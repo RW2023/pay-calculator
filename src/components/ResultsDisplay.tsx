@@ -52,28 +52,68 @@ const ResultsDisplay = forwardRef<HTMLDivElement, ResultsDisplayProps>(
 
         // Only include rows with a non-trivial value (> $0.009)
         const payRows: PayRow[] = [
-            { label: "Regular Pay", value: regularPay, color: "text-[var(--color-olive)]", border: "border-[var(--color-olive)]" },
+            {
+                label: "Regular Pay",
+                value: regularPay,
+                color: "text-[var(--foreground)]",
+                border: "border-[var(--color-teal)]",
+            },
             {
                 label: satOT > 0 ? "DT OT Pay" : "Overtime Pay",
                 value: overtimePay,
-                color: satOT > 0 ? "text-red-600" : "text-[var(--color-teal)]",
-                border: satOT > 0 ? "border-red-500" : "border-[var(--color-teal)]",
+                color: "text-[var(--foreground)]",
+                border: "border-[var(--color-teal)]",
             },
-            { label: "Holiday Pay", value: holidayPay, color: "text-yellow-500", border: "border-yellow-500" },
-            { label: "Lieu (Sick/Lieu) Pay", value: lieuPay, color: "text-blue-500", border: "border-blue-500" },
-            { label: "BUMP Pay", value: bumpPay, color: "text-purple-500", border: "border-purple-500" },
-            { label: "Night Shift Premium", value: nightShiftPay, color: "text-slate-700", border: "border-slate-500" },
-            { label: "Weekend Premium", value: weekendPay, color: "text-amber-700", border: "border-amber-500" },
-            { label: "Weekend OT Premium", value: weekendOTPay, color: "text-rose-700", border: "border-rose-500" },
-            { label: "Gross Pay", value: grossPay, color: "text-gray-500", border: "border-gray-400" },
+            {
+                label: "Holiday Pay",
+                value: holidayPay,
+                color: "text-[var(--foreground)]",
+                border: "border-[var(--color-teal)]",
+            },
+            {
+                label: "Lieu (Sick/Lieu) Pay",
+                value: lieuPay,
+                color: "text-[var(--foreground)]",
+                border: "border-[var(--color-teal)]",
+            },
+            {
+                label: "BUMP Pay",
+                value: bumpPay,
+                color: "text-[var(--foreground)]",
+                border: "border-[var(--color-teal)]",
+            },
+            {
+                label: "Night Shift Premium",
+                value: nightShiftPay,
+                color: "text-[var(--foreground)]",
+                border: "border-[var(--color-teal)]",
+            },
+            {
+                label: "Weekend Premium",
+                value: weekendPay,
+                color: "text-[var(--foreground)]",
+                border: "border-[var(--color-teal)]",
+            },
+            {
+                label: "Weekend OT Premium",
+                value: weekendOTPay,
+                color: "text-[var(--foreground)]",
+                border: "border-[var(--color-teal)]",
+            },
+            {
+                label: "Gross Pay",
+                value: grossPay,
+                color: "text-[var(--foreground)]",
+                border: "border-[var(--color-teal)]",
+            },
         ].filter(row => row.value > 0.009);
 
         const deductionRows: DeductionRow[] = [
-            { label: "Tax", value: federalTax, color: "text-rose-700" },
-            { label: "EI", value: ei, color: "text-sky-600" },
-            { label: "CPP", value: cpp, color: "text-indigo-600" },
-            { label: "Pension", value: pensionDeducted, color: "text-[var(--color-teal-dark)]" },
-            { label: "Union Dues", value: unionDuesDeducted, color: "text-[var(--color-teal-dark)]" },
+            { label: "Tax", value: federalTax, color: "text-[var(--foreground)]" },
+            { label: "EI", value: ei, color: "text-[var(--foreground)]" },
+            { label: "CPP", value: cpp, color: "text-[var(--foreground)]" },
+            { label: "Pension", value: pensionDeducted, color: "text-[var(--foreground)]" },
+            { label: "Union Dues", value: unionDuesDeducted, color: "text-[var(--foreground)]" },
         ].filter(row => row.value > 0.009);
 
         return (
@@ -88,7 +128,9 @@ const ResultsDisplay = forwardRef<HTMLDivElement, ResultsDisplayProps>(
                             <div className={`font-semibold text-lg ${color} flex items-center gap-2`}>
                                 {label}
                                 {label === "Holiday Pay" && lieuDaysAccrued > 0 && (
-                                    <span className="badge badge-warning text-xs ml-2">
+                                    <span
+                                        className="ml-2 rounded border border-[var(--color-teal)] bg-[var(--color-neutral)] px-1 text-xs text-[var(--foreground)]"
+                                    >
                                         <CheckCircle2 className="w-3 h-3 mr-1" />
                                         Lieu Day{lieuDaysAccrued > 1 ? "s" : ""} Accrued ({lieuDaysAccrued})
                                     </span>

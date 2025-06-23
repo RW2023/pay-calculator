@@ -10,7 +10,10 @@ export default function HistoryPage(): ReactElement {
                 <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-center font-poppins">
                     History
                 </h1>
-                <Link href="/pay" className="btn btn-sm btn-outline">
+                <Link
+                    href="/pay"
+                    className="btn btn-sm border border-[var(--color-teal)] text-[var(--color-teal)] bg-transparent hover:bg-[var(--color-neutral)]"
+                >
                     New Calculation
                 </Link>
             </div>

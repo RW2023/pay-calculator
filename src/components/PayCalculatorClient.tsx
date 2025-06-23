@@ -115,7 +115,7 @@ export default function PayCalculatorClient() {
             <WeeklyPayForm key={formKey} onSubmit={handleFormSubmit} initialValues={initialValues} />
 
             {pending && (
-                <div className="text-center text-gray-500">
+                <div className="text-center text-[var(--color-neutral-dark)]">
                     {editId ? 'Loading & calculating…' : 'Calculating…'}
                 </div>
             )}
@@ -123,10 +123,13 @@ export default function PayCalculatorClient() {
             {result && (
                 <section className="w-full mt-4 space-y-4">
                     <div className="flex justify-end gap-2">
-                        <PrintButton targetRef={resultsRef} />
-                        <button onClick={handleReset} className="btn btn-outline btn-sm">
-                            Reset All
-                        </button>
+<PrintButton targetRef={resultsRef} />
+<button
+onClick={handleReset}
+className="btn btn-sm border border-[var(--color-teal)] text-[var(--color-teal)] bg-transparent hover:bg-[var(--color-neutral)]"
+>
+Reset All
+</button>
                     </div>
                     <div ref={resultsRef}>
                         <ResultsDisplay result={result} />

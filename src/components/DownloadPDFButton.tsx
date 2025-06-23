@@ -31,7 +31,7 @@ export default function DownloadPDFButton({
     return (
         <button
             onClick={handleDownload}
-            className="btn btn-outline btn-sm flex gap-2 items-center"
+            className="btn btn-sm flex gap-2 items-center border border-[var(--color-teal)] text-[var(--color-teal)] bg-transparent hover:bg-[var(--color-neutral)]"
             type="button"
             aria-label={label}
         >

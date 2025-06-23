@@ -13,13 +13,11 @@ const config: Config = {
         body:    ["Karla","sans-serif"]
       },
       colors: {
-        primary:     "hsl(var(--color-primary)/<alpha-value>)",
-        accent:      "hsl(var(--color-accent)/<alpha-value>)",
-        olive:       "#7A9E00",
-        teal:        "#008C85",
-        "teal-dark": "#005F5A",
-        neutral:     "#F2F2F2",
-        "neutral-dark": "#333333",
+        olive:       'var(--color-olive)',
+        teal:        'var(--color-teal)',
+        'teal-dark': 'var(--color-teal-dark)',
+        neutral:     'var(--color-neutral)',
+        'neutral-dark': 'var(--color-neutral-dark)',
       }
     }
   }

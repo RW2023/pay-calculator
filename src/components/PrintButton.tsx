@@ -20,7 +20,7 @@ export default function PrintButton({ targetRef, label = "Print Results" }: Prin
     return (
         <button
             onClick={handlePrint}
-            className="btn btn-outline btn-sm flex gap-2 items-center print:hidden"
+            className="btn btn-sm flex gap-2 items-center print:hidden border border-[var(--color-teal)] text-[var(--color-teal)] bg-transparent hover:bg-[var(--color-neutral)]"
             aria-label={label}
             type="button"
         >
