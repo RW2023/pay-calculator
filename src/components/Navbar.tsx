@@ -9,7 +9,7 @@ import { Logo } from '@/components/Logo';
 
 const navItems = [
     { name: 'Home', href: '/' },
-    { name: 'Pay', href: '/pay' },
+    { name: 'Calculate', href: '/pay' },
     { name: 'About', href: '/about' },
 ];
 
