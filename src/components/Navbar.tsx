@@ -22,25 +22,26 @@ export default function Navbar() {
             aria-label="Main menu"
             className="
         sticky top-0 z-50
-        shadow-sm
-        border-b border-neutral/10
         bg-[var(--background)] text-[var(--foreground)]
+        border-b border-[var(--border)]
+        shadow-sm
         transition-colors duration-300
       "
         >
             <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-20">
-                <Link href="/" className="flex items-center gap-2">
+                {/* Logo */}
+                <Link href="/" className="flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary">
                     <Logo size={60} />
                     <span className="font-bold text-xl">PayCalc</span>
                 </Link>
 
-                {/* Desktop Menu */}
+                {/* Desktop */}
                 <div className="hidden lg:flex items-center space-x-6">
-                    {navItems.map((item) => (
+                    {navItems.map(item => (
                         <Link
                             key={item.name}
                             href={item.href}
-                            className="font-medium hover:underline transition"
+                            className="font-medium hover:underline focus:outline-none focus:underline"
                         >
                             {item.name}
                         </Link>
@@ -48,15 +49,20 @@ export default function Navbar() {
 
                     {/* Admin Dropdown */}
                     <div className="dropdown dropdown-hover">
-                        <button tabIndex={0} className="font-medium hover:underline transition">
+                        <button
+                            tabIndex={0}
+                            aria-haspopup="true"
+                            className="font-medium hover:underline focus:outline-none"
+                        >
                             Admin
                         </button>
                         <ul
                             tabIndex={0}
                             className="
-                dropdown-content menu p-2 shadow
+                dropdown-content menu p-2 shadow-md
                 bg-[var(--background)] text-[var(--foreground)]
                 rounded-box w-48
+                ring-1 ring-[var(--border)]
               "
                         >
                             <li><Link href="/admin">Dashboard</Link></li>
@@ -71,8 +77,8 @@ export default function Navbar() {
                 <button
                     title="Toggle mobile menu"
                     type="button"
-                    onClick={() => setMobileOpen((prev) => !prev)}
-                    className="lg:hidden p-2"
+                    onClick={() => setMobileOpen(o => !o)}
+                    className="lg:hidden p-2 focus:outline-none focus:ring-2 focus:ring-primary"
                     aria-label="Toggle menu"
                     aria-controls="mobile-menu"
                     aria-expanded={mobileOpen}
@@ -92,39 +98,39 @@ export default function Navbar() {
                 animate={mobileOpen ? 'open' : 'closed'}
                 transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                 className="
-          lg:hidden overflow-hidden border-t border-neutral/10
+          lg:hidden overflow-hidden 
           bg-[var(--background)] text-[var(--foreground)]
+          border-t border-[var(--border)]
         "
                 role="menu"
                 aria-hidden={!mobileOpen}
             >
                 <div className="px-4 py-6 space-y-4">
-                    {navItems.map((item) => (
+                    {navItems.map(item => (
                         <Link
                             key={item.name}
                             href={item.href}
                             onClick={() => setMobileOpen(false)}
-                            className="block text-lg font-medium hover:underline transition"
+                            className="block text-lg font-medium hover:underline focus:outline-none"
                             role="menuitem"
                         >
                             {item.name}
                         </Link>
                     ))}
 
-                    {/* Admin Section */}
-                    <div className="pt-4 border-t border-neutral/10 space-y-2">
+                    <div className="pt-4 border-t border-[var(--border)] space-y-2">
                         <span className="font-semibold">Admin</span>
                         <Link
                             href="/admin"
                             onClick={() => setMobileOpen(false)}
-                            className="block ml-4 hover:underline transition"
+                            className="block ml-4 hover:underline focus:outline-none"
                         >
                             Dashboard
                         </Link>
                         <Link
-                            href="/admin/history"
+                            href="/history"
                             onClick={() => setMobileOpen(false)}
-                            className="block ml-4 hover:underline transition"
+                            className="block ml-4 hover:underline focus:outline-none"
                         >
                             Entry History
                         </Link>
