@@ -1,28 +1,25 @@
-import type { Config } from "tailwindcss";
+// tailwind.config.ts
+import type { Config } from 'tailwindcss'
 
 const config: Config = {
   content: [
-    "./app/**/*.{ts,tsx}",
-    "./components/**/*.{ts,tsx}"
+    './app/**/*.{js,ts,jsx,tsx}',
+    './components/**/*.{js,ts,jsx,tsx}',
   ],
-  darkMode: "class",           // we’ll toggle via <html class="dark">
+  darkMode: 'class',     // ← use the string, not ['class']
   theme: {
     extend: {
-      fontFamily: {
-        heading: ["Poppins","sans-serif"],
-        body:    ["Karla","sans-serif"]
-      },
       colors: {
-        primary:     "hsl(var(--color-primary)/<alpha-value>)",
-        accent:      "hsl(var(--color-accent)/<alpha-value>)",
-        olive:       "#7A9E00",
-        teal:        "#008C85",
-        "teal-dark": "#005F5A",
-        neutral:     "#F2F2F2",
-        "neutral-dark": "#333333",
-      }
-    }
-  }
-};
+        primary:       'hsl(var(--color-primary)/<alpha-value>)',
+        accent:        'hsl(var(--color-accent)/<alpha-value>)',
+        olive:         'hsl(var(--color-olive)/<alpha-value>)',
+        teal:          'hsl(var(--color-teal)/<alpha-value>)',
+        'teal-dark':   'hsl(var(--color-teal-dark)/<alpha-value>)',
+        neutral:       'hsl(var(--color-neutral)/<alpha-value>)',
+        'neutral-dark':'hsl(var(--color-neutral-dark)/<alpha-value>)',
+      },
+    },
+  },
+}
 
-export default config;
+export default config

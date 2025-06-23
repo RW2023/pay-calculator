@@ -1,74 +1,26 @@
+/* globals.css */
+
 @import "tailwindcss";
+@plugin "daisyui";
 
-/* DaisyUI plugin config left for reference (not used for colors) */
-@plugin "daisyui" {
-  themes: light --default, dark --prefersdark;
-  root: ":root";
-}
-
-/* ===== Light Theme (Default) ===== */
 :root {
+  /* your semantic palette (H S L triplets) */
+  --color-primary: 210 50% 40%;
+  --color-accent: 30 80% 60%;
+  --color-olive: 90 50% 30%;
+  --color-teal: 175 80% 35%;
+  --color-teal-dark: 175 60% 20%;
+  --color-neutral: 220 10% 95%;
+  --color-neutral-dark: 220 10% 15%;
+
+  /* UI fundamentals */
   --background: #ffffff;
   --foreground: #171717;
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-mono);
-
-  /* Brand colors (light mode) */
-  --color-olive: #7A9E00;
-  --color-teal: #008C85;
-  --color-teal-dark: #005F5A;
-  --color-neutral: #F2F2F2;
-  --color-neutral-dark: #333333;
 }
 
-/* ===== Dark Theme: Next-themes uses .dark class on <html> ===== */
-html.dark,
-:root[data-theme="dark"] {
+html.dark {
+  /* dark-mode overrides */
   --background: #0a0a0a;
   --foreground: #ededed;
-
-  /* Adjust brand colors for dark mode (if desired): */
-  --color-olive: #b1d02f;
-  /* lighter olive for contrast */
-  --color-teal: #13bab3;
-  /* lighter teal */
-  --color-teal-dark: #008C85;
-  /* can use lighter teal here too */
-  --color-neutral: #232323;
-  /* swap to a dark neutral for surfaces */
-  --color-neutral-dark: #f2f2f2;
-  /* swap to light for text/icons on dark */
-}
-
-/* ====== Typography and Base ====== */
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-mono);
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-sans);
-}
-
-/* ====== Utility Examples ====== */
-/* Use these in your components for consistent colors: */
-/*
-.bg-olive        { background: var(--color-olive); }
-.text-olive      { color: var(--color-olive); }
-.bg-teal         { background: var(--color-teal); }
-.text-teal       { color: var(--color-teal); }
-.bg-neutral      { background: var(--color-neutral); }
-.text-neutral    { color: var(--color-neutral); }
-*/
-
-/* ====== Optional: Add transitions for theme switching ====== */
-html,
-body {
-  transition: background 0.3s, color 0.3s;
+  /* you can also tweak any of the palette vars here if desired */
 }
