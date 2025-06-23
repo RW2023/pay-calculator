@@ -14,19 +14,21 @@ export default function HowItWorksSection() {
                 </h2>
                 <ol className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {steps.map((step, idx) => (
-                        <li
-                            key={idx}
-                            className="flex flex-col items-center text-center space-y-4"
-                        >
+                        <li key={idx} className="flex flex-col items-center text-center space-y-4">
+
+                            {/* Circle around the number */}
                             <span
                                 className="
-                    inline-flex items-center justify-center 
-                    w-12 h-12 rounded-full font-bold
-                    bg-olive text-neutral-dark
+                    inline-flex items-center justify-center
+                    w-12 h-12 rounded-full
+                    border-2 border-olive
+                    bg-[var(--background)]
+                    text-olive font-bold
                   "
                             >
                                 {idx + 1}
                             </span>
+
                             <p className="max-w-xs">{step}</p>
                         </li>
                     ))}
