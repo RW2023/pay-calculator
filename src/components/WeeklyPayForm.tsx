@@ -24,7 +24,6 @@ export default function WeeklyPayForm({
     onSubmit,
     initialValues,
 }: WeeklyPayFormProps) {
-    // default template for a week
     const defaultDays: DayEntry[] = DAYS.map(() => ({
         scheduledStart: '21:00',
         scheduledEnd: '05:30',
@@ -48,11 +47,17 @@ export default function WeeklyPayForm({
         }
     }, [initialValues]);
 
-    const safeTime = (val: string | undefined) => typeof val === 'string' ? val : '';
+    const safeTime = (val: string | undefined) =>
+        typeof val === 'string' ? val : '';
 
     return (
         <form
-            className="bg-[var(--color-neutral)] rounded-2xl shadow p-4 sm:p-6 flex flex-col gap-6"
+            className="
+        bg-[var(--background)] text-[var(--foreground)]
+        rounded-2xl shadow p-4 sm:p-6
+        flex flex-col gap-6
+        transition-colors duration-300
+      "
             onSubmit={e => {
                 e.preventDefault();
                 onSubmit({ days, hasPension, hasUnionDues });
@@ -62,25 +67,24 @@ export default function WeeklyPayForm({
         >
             <div className="overflow-x-auto">
                 <table className="table w-full min-w-[1050px]">
-                    <thead>
+                    <thead className="text-[var(--foreground)]/80">
                         <tr>
-                            <th scope="col">Day</th>
-                            <th scope="col">Scheduled Start</th>
-                            <th scope="col">Scheduled End</th>
-                            <th scope="col">Actual Start</th>
-                            <th scope="col">Actual End</th>
-                            <th scope="col">Break (min)</th>
-                            <th scope="col">Holiday?</th>
-                            <th scope="col">BUMP?</th>
-                            <th scope="col">Lieu Used (hrs)</th>
+                            <th>Day</th>
+                            <th>Scheduled Start</th>
+                            <th>Scheduled End</th>
+                            <th>Actual Start</th>
+                            <th>Actual End</th>
+                            <th>Break (min)</th>
+                            <th>Holiday?</th>
+                            <th>BUMP?</th>
+                            <th>Lieu Used (hrs)</th>
                         </tr>
                     </thead>
                     <tbody>
                         {DAYS.map((label, idx) => {
-                            // ensure a valid DayEntry: use defaultDays fallback with non-null assertion
                             const day = days[idx] ?? defaultDays[idx]!;
                             return (
-                                <tr key={label}>
+                                <tr key={label} className="odd:bg-[var(--background)] even:bg-[var(--background)]">
                                     <th scope="row" className="font-semibold">{label}</th>
                                     <td>
                                         <input
@@ -229,9 +233,8 @@ export default function WeeklyPayForm({
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-                <label className="flex items-center gap-2 font-medium" htmlFor="pension-toggle">
+                <label className="flex items-center gap-2 font-medium">
                     <input
-                        id="pension-toggle"
                         type="checkbox"
                         className="toggle toggle-info"
                         checked={hasPension}
@@ -240,9 +243,8 @@ export default function WeeklyPayForm({
                     />
                     Pension
                 </label>
-                <label className="flex items-center gap-2 font-medium" htmlFor="union-toggle">
+                <label className="flex items-center gap-2 font-medium">
                     <input
-                        id="union-toggle"
                         type="checkbox"
                         className="toggle toggle-warning"
                         checked={hasUnionDues}
@@ -251,7 +253,11 @@ export default function WeeklyPayForm({
                     />
                     Union Dues
                 </label>
-                <button type="submit" className="btn btn-primary ml-auto px-8" aria-label="Calculate weekly pay">
+                <button
+                    type="submit"
+                    className="btn btn-primary ml-auto px-8"
+                    aria-label="Calculate weekly pay"
+                >
                     Calculate
                 </button>
             </div>
