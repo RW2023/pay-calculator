@@ -37,6 +37,50 @@
   --muted: hsl(220, 20%, 20%);
 }
 
+/* ───────── Light theme defaults ───────── */
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+
+  /* Brand palette (light) */
+  --color-teal: hsl(175, 80%, 35%);
+  --color-teal-dark: hsl(175, 60%, 25%);
+  --color-olive: hsl(90, 45%, 35%);
+  --color-neutral: hsl(220, 10%, 95%);
+  --color-neutral-dark: hsl(220, 10%, 30%);
+
+  /* Existing vars keep as-is ↓ */
+  --card-bg: #f8f8f8;
+  --border: hsl(220, 15%, 80%);
+  --primary: hsl(143, 60%, 35%);
+  --secondary: hsl(20, 80%, 45%);
+  --accent: hsl(48, 90%, 55%);
+  --muted: hsl(220, 20%, 85%);
+  --font-sans: 'Karla', sans-serif;
+  --font-heading: 'Londrina Solid', cursive;
+  --font-mono: 'Geist Mono', monospace;
+}
+
+/* ───────── Dark overrides ───────── */
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+
+  --color-teal: hsl(175, 80%, 40%);
+  --color-teal-dark: hsl(175, 60%, 22%);
+  --color-olive: hsl(90, 45%, 42%);
+  --color-neutral: hsl(220, 10%, 12%);
+  --color-neutral-dark: hsl(220, 10%, 18%);
+
+  /* existing vars ↓ */
+  --card-bg: #121212;
+  --border: hsl(220, 15%, 25%);
+  --primary: hsl(143, 60%, 45%);
+  --secondary: hsl(12, 80%, 60%);
+  --accent: hsl(48, 90%, 65%);
+  --muted: hsl(220, 20%, 20%);
+}
+
 /* ─────────────────────────────────────── */
 /*      Tailwind Inline Theme Mapping      */
 /* ─────────────────────────────────────── */
