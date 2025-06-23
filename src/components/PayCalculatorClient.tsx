@@ -1,4 +1,3 @@
-// components/PayCalculatorClient.tsx
 'use client';
 
 import { useRef, useState, useTransition, useEffect } from 'react';
@@ -22,9 +21,12 @@ export default function PayCalculatorClient() {
     const [formKey, setFormKey] = useState(0);
     const resultsRef = useRef<HTMLDivElement>(null);
 
-    /* ───────── 1. load saved entry if ?editId= ───────── */
+    /* 1. Load saved entry if ?editId= */
     useEffect(() => {
-        if (!editId) { setInitialValues(undefined); return; }
+        if (!editId) {
+            setInitialValues(undefined);
+            return;
+        }
 
         const loadEntry = async () => {
             try {
@@ -32,7 +34,9 @@ export default function PayCalculatorClient() {
                 if (!res.ok) throw new Error(`Failed to load entry: ${res.statusText}`);
 
                 const raw = (await res.json()) as {
-                    days: unknown; hasPension: boolean; hasUnionDues: boolean;
+                    days: unknown;
+                    hasPension: boolean;
+                    hasUnionDues: boolean;
                 };
                 if (!Array.isArray(raw.days)) throw new Error('Invalid data format');
 
@@ -55,13 +59,16 @@ export default function PayCalculatorClient() {
                     hasPension: raw.hasPension,
                     hasUnionDues: raw.hasUnionDues,
                 });
-                setFormKey(k => k + 1);          // force form re-mount
-            } catch (err) { console.error(err); }
+                setFormKey(k => k + 1); // force re-mount
+            } catch (err) {
+                console.error(err);
+            }
         };
+
         void loadEntry();
     }, [editId]);
 
-    /* ───────── 2. auto-calculate once initial values appear ───────── */
+    /* 2. Auto-calculate when initial values appear */
     useEffect(() => {
         if (!initialValues) return;
         startTransition(async () => {
@@ -70,7 +77,7 @@ export default function PayCalculatorClient() {
         });
     }, [initialValues, startTransition]);
 
-    /* ───────── 3. form submit handler ───────── */
+    /* 3. Submit handler */
     const handleFormSubmit = (values: WeeklyPayInput) => {
         startTransition(async () => {
             try {
@@ -79,7 +86,9 @@ export default function PayCalculatorClient() {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(values),
                 });
-            } catch (err) { console.error('Failed to save snapshot:', err); }
+            } catch (err) {
+                console.error('Failed to save snapshot:', err);
+            }
 
             const res = await calculatePayAction(values);
             setResult(res);
@@ -92,13 +101,11 @@ export default function PayCalculatorClient() {
         setFormKey(k => k + 1);
     };
 
-    /* ───────── 4. render ───────── */
+    /* 4. Render */
     return (
         <div className="space-y-8">
-
-            {/* form card */}
-            <div className="p-6 rounded-lg shadow transition-colors duration-300"
-                style={{ background: 'var(--background)', color: 'var(--foreground)' }}>
+            {/* Form card */}
+            <div className="p-6 rounded-lg shadow bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300">
                 <WeeklyPayForm
                     key={formKey}
                     onSubmit={handleFormSubmit}
@@ -106,15 +113,14 @@ export default function PayCalculatorClient() {
                 />
             </div>
 
-            {/* pending indicator */}
+            {/* Pending indicator */}
             {pending && (
-                <div className="text-center opacity-60"
-                    style={{ color: 'var(--foreground)' }}>
+                <div className="text-center opacity-60 text-[var(--foreground)]">
                     {editId ? 'Loading & calculating…' : 'Calculating…'}
                 </div>
             )}
 
-            {/* results */}
+            {/* Results */}
             {result && (
                 <section className="space-y-4">
                     <div className="flex justify-end gap-2">
@@ -127,9 +133,10 @@ export default function PayCalculatorClient() {
                         </button>
                     </div>
 
-                    <div ref={resultsRef}
-                        className="p-6 rounded-lg shadow transition-colors duration-300"
-                        style={{ background: 'var(--background)', color: 'var(--foreground)' }}>
+                    <div
+                        ref={resultsRef}
+                        className="p-6 rounded-lg shadow bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300"
+                    >
                         <ResultsDisplay result={result} />
                     </div>
                 </section>

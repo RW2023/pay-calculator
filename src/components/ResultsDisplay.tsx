@@ -1,11 +1,21 @@
-// components/ResultsDisplay.tsx
 import React, { forwardRef } from 'react';
 import { CheckCircle2, BadgeDollarSign, ReceiptText } from 'lucide-react';
 import type { WeeklyPayResult } from '@/lib/payUtils';
 
-interface ResultsDisplayProps { result: WeeklyPayResult }
-interface PayRow { label: string; value: number; colorClass: string; borderClass: string }
-interface DeductionRow { label: string; value: number; colorClass: string }
+interface ResultsDisplayProps {
+    result: WeeklyPayResult;
+}
+interface PayRow {
+    label: string;
+    value: number;
+    colorClass: string;
+    borderClass: string;
+}
+interface DeductionRow {
+    label: string;
+    value: number;
+    colorClass: string;
+}
 
 const ResultsDisplay = forwardRef<HTMLDivElement, ResultsDisplayProps>(
     ({ result }, ref) => {
@@ -23,7 +33,6 @@ const ResultsDisplay = forwardRef<HTMLDivElement, ResultsDisplayProps>(
         const satWorked = saturday?.hoursWorked ?? 0;
         const satOT = saturday?.overtimePay ?? 0;
 
-        /* ------------ earnings rows (> $0.009) ------------ */
         const payRows: PayRow[] = [
             { label: 'Regular Pay', value: regularPay, colorClass: 'text-olive', borderClass: 'border-olive' },
             { label: satOT > 0 ? 'DT OT Pay' : 'Overtime Pay', value: overtimePay, colorClass: 'text-teal', borderClass: 'border-teal' },
@@ -36,7 +45,6 @@ const ResultsDisplay = forwardRef<HTMLDivElement, ResultsDisplayProps>(
             { label: 'Gross Pay', value: grossPay, colorClass: 'text-neutral-dark opacity-70', borderClass: 'border-neutral-dark' },
         ].filter(r => r.value > 0.009);
 
-        /* ------------ deductions (> $0.009) ------------ */
         const deductionRows: DeductionRow[] = [
             { label: 'Tax', value: federalTax, colorClass: 'text-accent' },
             { label: 'EI', value: ei, colorClass: 'text-teal' },
@@ -47,18 +55,12 @@ const ResultsDisplay = forwardRef<HTMLDivElement, ResultsDisplayProps>(
 
         return (
             <section ref={ref} className="w-full mt-4 space-y-6">
-
-                {/* Earnings cards */}
+                {/* Earnings */}
                 <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
                     {payRows.map(({ label, value, colorClass, borderClass }) => (
                         <div
                             key={label}
-                            className={`
-                card shadow rounded-xl p-4
-                border-l-4 ${borderClass}
-                bg-[var(--background)] text-[var(--foreground)]
-                transition-colors duration-300
-              `}
+                            className={`card shadow rounded-xl p-4 border-l-4 ${borderClass} bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300`}
                         >
                             <div className={`flex items-center gap-2 font-semibold text-lg ${colorClass}`}>
                                 {label}
@@ -74,30 +76,25 @@ const ResultsDisplay = forwardRef<HTMLDivElement, ResultsDisplayProps>(
                     ))}
                 </div>
 
-                {/* Deductions block */}
-                <div
-                    className="
-            card shadow rounded-xl p-6
-            border-t-4 border-neutral-dark
-            bg-[var(--background)] text-[var(--foreground)]
-            transition-colors duration-300
-          "
-                >
+                {/* Deductions */}
+                <div className="card shadow rounded-xl p-6 border-t-4 border-neutral-dark bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300">
                     <div className="flex items-center gap-2 font-semibold text-lg text-neutral-dark mb-2">
                         <ReceiptText className="w-5 h-5" /> Deductions
                     </div>
                     <ul className="mt-1 text-base space-y-1">
                         {deductionRows.map(({ label, value, colorClass }) => (
                             <li key={label}>
-                                {label}: <span className={`font-bold ${colorClass}`}>${value.toFixed(2)}</span>
+                                {label}:{' '}
+                                <span className={`font-bold ${colorClass}`}>
+                                    ${value.toFixed(2)}
+                                </span>
                             </li>
                         ))}
                     </ul>
                 </div>
 
-                {/* Net Pay + Quick Stats */}
+                {/* Net Pay & Stats */}
                 <div className="grid sm:grid-cols-2 gap-6">
-
                     <div className="card shadow-xl rounded-xl p-6 flex flex-col items-center border-none bg-teal text-white">
                         <div className="flex items-center gap-2 text-2xl font-extrabold uppercase tracking-wider">
                             <BadgeDollarSign className="w-8 h-8" />
@@ -115,17 +112,14 @@ const ResultsDisplay = forwardRef<HTMLDivElement, ResultsDisplayProps>(
                             {satWorked > 0 && <li><span className="font-semibold">DT Rate:</span> 2×</li>}
                             {satOT > 0 && <li><span className="font-semibold">DT OT Rate:</span> 2.5×</li>}
                             {lieuDaysAccrued > 0 && (
-                                <li>
-                                    <span className="font-semibold">Lieu Days Accrued:</span> {lieuDaysAccrued}
-                                </li>
+                                <li><span className="font-semibold">Lieu Days Accrued:</span> {lieuDaysAccrued}</li>
                             )}
                         </ul>
                     </div>
-
                 </div>
             </section>
         );
-    },
+    }
 );
 
 ResultsDisplay.displayName = 'ResultsDisplay';
