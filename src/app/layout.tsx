@@ -1,4 +1,3 @@
-// app/layout.tsx
 import type { Metadata } from "next";
 import { Poppins, Karla } from "next/font/google";
 import "./globals.css";
@@ -32,11 +31,14 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    // Add suppressHydrationWarning and initial 'light' class on html to match client
-    <html lang="en" className="light" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <body className={`${poppins.variable} ${karla.variable} antialiased`}>
-        {/* wraps your entire app in theme context with static default theme */}
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} enableColorScheme={false}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem={true}
+          enableColorScheme={false}
+        >
           <Navbar />
           {children}
         </ThemeProvider>
