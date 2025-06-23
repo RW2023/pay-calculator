@@ -46,28 +46,28 @@ const ResultsDisplay = forwardRef<HTMLDivElement, ResultsDisplayProps>(({ result
     const satOT = saturday?.overtimePay ?? 0;
 
     const payRows: PayRow[] = [
-        { label: 'Regular Pay', value: regularPay, colorClass: 'text-olive', borderClass: 'border-olive' },
+        { label: 'Regular Pay', value: regularPay, colorClass: 'text-[var(--color-olive)]', borderClass: 'border-[var(--color-olive)]' },
         {
             label: satOT > 0 ? 'DT OT Pay' : 'Overtime Pay',
             value: overtimePay,
-            colorClass: 'text-teal',
-            borderClass: 'border-teal',
+            colorClass: 'text-[var(--color-teal)]',
+            borderClass: 'border-[var(--color-teal)]',
         },
-        { label: 'Holiday Pay', value: holidayPay, colorClass: 'text-accent', borderClass: 'border-accent' },
-        { label: 'Lieu (Sick/Lieu) Pay', value: lieuPay, colorClass: 'text-teal-dark', borderClass: 'border-teal-dark' },
-        { label: 'BUMP Pay', value: bumpPay, colorClass: 'text-primary', borderClass: 'border-primary' },
-        { label: 'Night Shift Premium', value: nightShiftPay, colorClass: 'text-neutral-dark', borderClass: 'border-neutral-dark' },
-        { label: 'Weekend Premium', value: weekendPay, colorClass: 'text-accent', borderClass: 'border-accent' },
-        { label: 'Weekend OT Premium', value: weekendOTPay, colorClass: 'text-primary', borderClass: 'border-primary' },
-        { label: 'Gross Pay', value: grossPay, colorClass: 'text-neutral-dark opacity-70', borderClass: 'border-neutral-dark' },
+        { label: 'Holiday Pay', value: holidayPay, colorClass: 'text-[var(--color-accent)]', borderClass: 'border-[var(--color-accent)]' },
+        { label: 'Lieu (Sick/Lieu) Pay', value: lieuPay, colorClass: 'text-[var(--color-teal-dark)]', borderClass: 'border-[var(--color-teal-dark)]' },
+        { label: 'BUMP Pay', value: bumpPay, colorClass: 'text-[var(--color-primary)]', borderClass: 'border-[var(--color-primary)]' },
+        { label: 'Night Shift Premium', value: nightShiftPay, colorClass: 'text-[var(--color-neutral-dark)]', borderClass: 'border-[var(--color-neutral-dark)]' },
+        { label: 'Weekend Premium', value: weekendPay, colorClass: 'text-[var(--color-accent)]', borderClass: 'border-[var(--color-accent)]' },
+        { label: 'Weekend OT Premium', value: weekendOTPay, colorClass: 'text-[var(--color-primary)]', borderClass: 'border-[var(--color-primary)]' },
+        { label: 'Gross Pay', value: grossPay, colorClass: 'text-[var(--color-neutral-dark)] opacity-70', borderClass: 'border-[var(--color-neutral-dark)]' },
     ].filter((r) => r.value > 0.009);
 
     const deductionRows: DeductionRow[] = [
-        { label: 'Tax', value: federalTax, colorClass: 'text-accent' },
-        { label: 'EI', value: ei, colorClass: 'text-teal' },
-        { label: 'CPP', value: cpp, colorClass: 'text-primary' },
-        { label: 'Pension', value: pensionDeducted, colorClass: 'text-teal-dark' },
-        { label: 'Union Dues', value: unionDuesDeducted, colorClass: 'text-teal-dark' },
+        { label: 'Tax', value: federalTax, colorClass: 'text-[var(--color-accent)]' },
+        { label: 'EI', value: ei, colorClass: 'text-[var(--color-teal)]' },
+        { label: 'CPP', value: cpp, colorClass: 'text-[var(--color-primary)]' },
+        { label: 'Pension', value: pensionDeducted, colorClass: 'text-[var(--color-teal-dark)]' },
+        { label: 'Union Dues', value: unionDuesDeducted, colorClass: 'text-[var(--color-teal-dark)]' },
     ].filter((r) => r.value > 0.009);
 
     return (
@@ -94,8 +94,8 @@ const ResultsDisplay = forwardRef<HTMLDivElement, ResultsDisplayProps>(({ result
             </div>
 
             {/* Deductions */}
-            <div className="card shadow rounded-xl p-6 border-t-4 border-neutral-dark bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300">
-                <div className="flex items-center gap-2 font-semibold text-lg text-neutral-dark mb-2">
+            <div className="card shadow rounded-xl p-6 border-t-4 border-[var(--color-neutral-dark)] bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300">
+                <div className="flex items-center gap-2 font-semibold text-lg text-[var(--color-neutral-dark)] mb-2">
                     <ReceiptText className="w-5 h-5" /> Deductions
                 </div>
                 <ul className="mt-1 text-base space-y-1">
@@ -123,8 +123,8 @@ const ResultsDisplay = forwardRef<HTMLDivElement, ResultsDisplayProps>(({ result
                 </div>
 
                 {/* Quick Stats */}
-                <div className="card shadow-xl rounded-xl p-6 flex flex-col justify-center border-none bg-neutral text-[var(--foreground)]">
-                    <div className="font-semibold text-lg text-olive mb-2">Quick Stats</div>
+                <div className="card shadow-xl rounded-xl p-6 flex flex-col justify-center border-none bg-[var(--color-neutral)] dark:bg-[var(--color-neutral-dark)] text-[var(--foreground)] transition-colors duration-300">
+                    <div className="font-semibold text-lg text-[var(--color-olive)] mb-2">Quick Stats</div>
                     <ul className="space-y-1">
                         <li>
                             <span className="font-semibold">Total Hours Paid:</span> {totalHours.toFixed(2)} hrs

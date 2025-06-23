@@ -18,7 +18,7 @@ export default function FeaturesSection() {
                             className="border border-[var(--color-teal)] rounded-2xl shadow-sm hover:shadow-lg transition p-6 bg-[var(--background)] text-[var(--foreground)]"
                         >
                             <div className="flex items-center justify-center mb-4">
-                                <Icon className="w-12 h-12" style={{ color: "var(--color-olive)" }} />
+                                <Icon className="w-12 h-12 text-[var(--color-olive)]" />
                             </div>
                             <h3 className="text-xl font-semibold mb-2">{title}</h3>
                             <p className="opacity-80">{desc}</p>
