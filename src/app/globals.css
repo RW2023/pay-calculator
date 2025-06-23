@@ -3,8 +3,9 @@
 @import "tailwindcss";
 @plugin "daisyui";
 
+/* ───────────── 1. Light-mode palette ───────────── */
 :root {
-  /* your semantic palette (H S L triplets) */
+  /* semantic palette – H S L triplets only */
   --color-primary: 210 50% 40%;
   --color-accent: 30 80% 60%;
   --color-olive: 90 50% 30%;
@@ -18,9 +19,101 @@
   --foreground: #171717;
 }
 
+/* ───────────── 2. Dark-mode overrides ───────────── */
 html.dark {
-  /* dark-mode overrides */
   --background: #0a0a0a;
   --foreground: #ededed;
-  /* you can also tweak any of the palette vars here if desired */
+
+  /* tweak palette if you want different tints in dark mode:
+     --color-accent: 30 80% 70%; */
 }
+
+/* ───────────── 3. Utility palette (global) ───────────── */
+/* These classes bypass Tailwind’s colour utilities so you
+   never have to fight purge/JIT for dynamic class strings. */
+
+.text-olive {
+  color: hsl(var(--color-olive));
+}
+
+.border-olive {
+  border-color: hsl(var(--color-olive));
+}
+
+.bg-olive {
+  background-color: hsl(var(--color-olive));
+}
+
+.text-teal {
+  color: hsl(var(--color-teal));
+}
+
+.border-teal {
+  border-color: hsl(var(--color-teal));
+}
+
+.bg-teal {
+  background-color: hsl(var(--color-teal));
+}
+
+.text-teal-dark {
+  color: hsl(var(--color-teal-dark));
+}
+
+.border-teal-dark {
+  border-color: hsl(var(--color-teal-dark));
+}
+
+.bg-teal-dark {
+  background-color: hsl(var(--color-teal-dark));
+}
+
+.text-accent {
+  color: hsl(var(--color-accent));
+}
+
+.border-accent {
+  border-color: hsl(var(--color-accent));
+}
+
+.bg-accent {
+  background-color: hsl(var(--color-accent));
+}
+
+.text-primary {
+  color: hsl(var(--color-primary));
+}
+
+.border-primary {
+  border-color: hsl(var(--color-primary));
+}
+
+.bg-primary {
+  background-color: hsl(var(--color-primary));
+}
+
+.text-neutral-dark {
+  color: hsl(var(--color-neutral-dark));
+}
+
+.border-neutral-dark {
+  border-color: hsl(var(--color-neutral-dark));
+}
+
+.bg-neutral-dark {
+  background-color: hsl(var(--color-neutral-dark));
+}
+
+.text-neutral {
+  color: hsl(var(--color-neutral));
+}
+
+.border-neutral {
+  border-color: hsl(var(--color-neutral));
+}
+
+.bg-neutral {
+  background-color: hsl(var(--color-neutral));
+}
+
+/* Add more semantic aliases here (badge-… etc.) if needed */
