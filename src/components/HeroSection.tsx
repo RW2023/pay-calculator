@@ -14,7 +14,7 @@ export default function HeroSection() {
 
                 {/* Headline */}
                 <h1 className="text-[clamp(2.5rem,5vw,4rem)] font-extrabold">
-                    Welcome to PayCalc Estimator
+                    Welcome to  the PayCalc Estimator
                 </h1>
 
                 {/* Subhead */}
