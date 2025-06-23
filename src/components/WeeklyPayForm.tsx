@@ -1,9 +1,18 @@
+// components/WeeklyPayForm.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
 import type { DayEntry } from '@/lib/payUtils';
 
-const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const DAYS = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
+];
 
 export type WeeklyPayInput = {
     days: DayEntry[];
@@ -40,11 +49,11 @@ export default function WeeklyPayForm({ onSubmit, initialValues }: WeeklyPayForm
         }
     }, [initialValues]);
 
-    const safeTime = (val: string | undefined) => (typeof val === 'string' ? val : '');
+    const safeTime = (val?: string) => (typeof val === 'string' ? val : '');
 
     return (
         <form
-            onSubmit={e => {
+            onSubmit={(e) => {
                 e.preventDefault();
                 onSubmit({ days, hasPension, hasUnionDues });
             }}
@@ -52,6 +61,7 @@ export default function WeeklyPayForm({ onSubmit, initialValues }: WeeklyPayForm
             aria-label="Weekly Pay Input Form"
             autoComplete="off"
         >
+            {/* --- Table --- */}
             <div className="overflow-x-auto">
                 <table className="table w-full min-w-[1050px]">
                     <thead className="text-[var(--foreground)]/80">
@@ -72,137 +82,134 @@ export default function WeeklyPayForm({ onSubmit, initialValues }: WeeklyPayForm
                             const day = days[idx] ?? defaultDays[idx]!;
                             return (
                                 <tr key={label} className="even:bg-muted/20">
-                                    <th scope="row" className="font-semibold">{label}</th>
+                                    <th scope="row" className="font-semibold">
+                                        {label}
+                                    </th>
+                                    {/* Scheduled Start */}
                                     <td>
                                         <input
                                             id={`${label}-scheduled-start`}
                                             type="time"
-                                            className="input input-bordered w-full"
+                                            className="input input-bordered w-full bg-[var(--card-bg)] text-[var(--foreground)]"
+                                            aria-label={`${label} scheduled start time`}
                                             value={safeTime(day.scheduledStart)}
-                                            aria-label={`${label} scheduled start`}
-                                            onChange={e =>
-                                                setDays(prev =>
-                                                    prev.map((d, i) =>
-                                                        i === idx ? { ...d, scheduledStart: e.target.value } : d
-                                                    )
+                                            onChange={(e) =>
+                                                setDays((prev) =>
+                                                    prev.map((d, i) => (i === idx ? { ...d, scheduledStart: e.target.value } : d))
                                                 )
                                             }
                                             required
                                         />
                                     </td>
+                                    {/* Scheduled End */}
                                     <td>
                                         <input
                                             id={`${label}-scheduled-end`}
                                             type="time"
-                                            className="input input-bordered w-full"
+                                            className="input input-bordered w-full bg-[var(--card-bg)] text-[var(--foreground)]"
+                                            aria-label={`${label} scheduled end time`}
                                             value={safeTime(day.scheduledEnd)}
-                                            aria-label={`${label} scheduled end`}
-                                            onChange={e =>
-                                                setDays(prev =>
-                                                    prev.map((d, i) =>
-                                                        i === idx ? { ...d, scheduledEnd: e.target.value } : d
-                                                    )
+                                            onChange={(e) =>
+                                                setDays((prev) =>
+                                                    prev.map((d, i) => (i === idx ? { ...d, scheduledEnd: e.target.value } : d))
                                                 )
                                             }
                                             required
                                         />
                                     </td>
+                                    {/* Actual Start */}
                                     <td>
                                         <input
                                             id={`${label}-actual-start`}
                                             type="time"
-                                            className="input input-bordered w-full"
+                                            className="input input-bordered w-full bg-[var(--card-bg)] text-[var(--foreground)]"
+                                            aria-label={`${label} actual start time`}
                                             value={safeTime(day.actualStart)}
-                                            aria-label={`${label} actual start`}
-                                            onChange={e =>
-                                                setDays(prev =>
-                                                    prev.map((d, i) =>
-                                                        i === idx ? { ...d, actualStart: e.target.value } : d
-                                                    )
+                                            onChange={(e) =>
+                                                setDays((prev) =>
+                                                    prev.map((d, i) => (i === idx ? { ...d, actualStart: e.target.value } : d))
                                                 )
                                             }
                                         />
                                     </td>
+                                    {/* Actual End */}
                                     <td>
                                         <input
                                             id={`${label}-actual-end`}
                                             type="time"
-                                            className="input input-bordered w-full"
+                                            className="input input-bordered w-full bg-[var(--card-bg)] text-[var(--foreground)]"
+                                            aria-label={`${label} actual end time`}
                                             value={safeTime(day.actualEnd)}
-                                            aria-label={`${label} actual end`}
-                                            onChange={e =>
-                                                setDays(prev =>
-                                                    prev.map((d, i) =>
-                                                        i === idx ? { ...d, actualEnd: e.target.value } : d
-                                                    )
+                                            onChange={(e) =>
+                                                setDays((prev) =>
+                                                    prev.map((d, i) => (i === idx ? { ...d, actualEnd: e.target.value } : d))
                                                 )
                                             }
                                         />
                                     </td>
+                                    {/* Break Minutes */}
                                     <td>
                                         <select
                                             id={`${label}-break-minutes`}
-                                            className="input input-sm w-full"
-                                            value={day.breakMinutes}
+                                            className="input input-sm w-full bg-[var(--card-bg)] text-[var(--foreground)]"
                                             aria-label={`${label} break minutes`}
-                                            onChange={e =>
-                                                setDays(prev =>
-                                                    prev.map((d, i) =>
-                                                        i === idx ? { ...d, breakMinutes: Number(e.target.value) } : d
-                                                    )
+                                            value={day.breakMinutes}
+                                            onChange={(e) =>
+                                                setDays((prev) =>
+                                                    prev.map((d, i) => (i === idx ? { ...d, breakMinutes: Number(e.target.value) } : d))
                                                 )
                                             }
                                         >
-                                            <option value={0}>0</option>
-                                            <option value={30}>30</option>
-                                            <option value={45}>45</option>
-                                            <option value={60}>60</option>
+                                            {[0, 30, 45, 60].map((v) => (
+                                                <option key={v} value={v}>
+                                                    {v}
+                                                </option>
+                                            ))}
                                         </select>
                                     </td>
+                                    {/* Holiday */}
                                     <td>
                                         <input
                                             id={`${label}-is-holiday`}
                                             type="checkbox"
                                             className="toggle toggle-success"
-                                            checked={day.isHoliday}
                                             aria-label={`${label} is holiday`}
-                                            onChange={e =>
-                                                setDays(prev =>
-                                                    prev.map((d, i) =>
-                                                        i === idx ? { ...d, isHoliday: e.target.checked } : d
-                                                    )
+                                            checked={day.isHoliday}
+                                            onChange={(e) =>
+                                                setDays((prev) =>
+                                                    prev.map((d, i) => (i === idx ? { ...d, isHoliday: e.target.checked } : d))
                                                 )
                                             }
                                         />
                                     </td>
+                                    {/* BUMP */}
                                     <td>
                                         <input
                                             id={`${label}-is-bump`}
                                             type="checkbox"
                                             className="toggle toggle-warning"
-                                            checked={day.isBump}
                                             aria-label={`${label} is bump`}
-                                            onChange={e =>
-                                                setDays(prev =>
-                                                    prev.map((d, i) =>
-                                                        i === idx ? { ...d, isBump: e.target.checked } : d
-                                                    )
+                                            checked={day.isBump}
+                                            onChange={(e) =>
+                                                setDays((prev) =>
+                                                    prev.map((d, i) => (i === idx ? { ...d, isBump: e.target.checked } : d))
                                                 )
                                             }
                                         />
                                     </td>
+                                    {/* Lieu Used */}
                                     <td>
                                         <input
                                             id={`${label}-lieu-hours-used`}
                                             type="number"
-                                            className="input input-bordered w-16"
                                             min={0}
                                             max={8}
                                             step={0.25}
-                                            value={Number.isFinite(day.lieuHoursUsed) ? day.lieuHoursUsed : 0}
+                                            className="input input-bordered w-16 bg-[var(--card-bg)] text-[var(--foreground)]"
                                             aria-label={`${label} lieu hours used`}
-                                            onChange={e =>
-                                                setDays(prev =>
+                                            value={Number.isFinite(day.lieuHoursUsed) ? day.lieuHoursUsed : 0}
+                                            onChange={(e) =>
+                                                setDays((prev) =>
                                                     prev.map((d, i) =>
                                                         i === idx
                                                             ? { ...d, lieuHoursUsed: Math.max(0, Number(e.target.value) || 0) }
@@ -219,31 +226,38 @@ export default function WeeklyPayForm({ onSubmit, initialValues }: WeeklyPayForm
                 </table>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-                <label className="flex items-center gap-2 font-medium">
+            {/* --- Bottom Controls --- */}
+            <div className="flex flex-col sm:flex-row gap-4 items-center sm:items-center">
+                {/* DaisyUI Pension toggle */}
+                <label htmlFor="pension-toggle" className="flex items-center gap-2 font-medium">
                     <input
+                        id="pension-toggle"
                         type="checkbox"
                         className="toggle toggle-info"
+                        aria-label="Toggle pension deductions"
                         checked={hasPension}
-                        aria-label="Pension deductions?"
-                        onChange={e => setHasPension(e.target.checked)}
+                        onChange={(e) => setHasPension(e.target.checked)}
                     />
                     Pension
                 </label>
-                <label className="flex items-center gap-2 font-medium">
+
+                {/* DaisyUI Union Dues toggle */}
+                <label htmlFor="union-toggle" className="flex items-center gap-2 font-medium">
                     <input
+                        id="union-toggle"
                         type="checkbox"
                         className="toggle toggle-warning"
+                        aria-label="Toggle union dues deductions"
                         checked={hasUnionDues}
-                        aria-label="Union dues deductions?"
-                        onChange={e => setHasUnionDues(e.target.checked)}
+                        onChange={(e) => setHasUnionDues(e.target.checked)}
                     />
                     Union Dues
                 </label>
+
+                {/* Teal Calculate button */}
                 <button
                     type="submit"
-                    className="btn btn-primary ml-auto px-8"
-                    aria-label="Calculate weekly pay"
+                    className="ml-auto px-8 py-2 font-semibold rounded-md shadow bg-[var(--color-teal)] text-[var(--background)] transition-colors duration-200 hover:bg-[var(--color-teal-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--color-teal-dark)]"
                 >
                     Calculate
                 </button>
