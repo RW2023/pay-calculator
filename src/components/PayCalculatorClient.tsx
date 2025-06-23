@@ -100,7 +100,7 @@ export default function PayCalculatorClient() {
     };
 
     return (
-        <section className="space-y-8" aria-labelledby="weekly-pay-form-heading">
+        <section className="space-y-8" aria-labelledby="weekly-pay-form-heading min-h-screen">
             <h2 id="weekly-pay-form-heading" className="sr-only">Weekly Pay Calculator</h2>
 
             {/* Form card */}
