@@ -28,31 +28,46 @@ export default function HowItWorksSection({ steps }: HowItWorksSectionProps) {
                 {steps.map((step, idx) => (
                     <div
                         key={idx}
-                        className={`bg-[var(--color-neutral)] shadow rounded-xl p-6 flex flex-col md:flex-row gap-6 ${idx % 2 === 1 ? 'md:flex-row-reverse' : ''
-                            }`}
+                        className={
+                            `flex flex-col md:flex-row shadow rounded-xl overflow-hidden transition-colors duration-300 ${idx % 2 === 1 ? 'md:flex-row-reverse' : ''
+                            }`
+                        }
                     >
+                        {/* Screenshot Pane */}
                         <div className="flex-shrink-0 w-full md:w-1/2">
                             <button
-                                title='Enlarge screenshot'
+                                title="Enlarge screenshot"
                                 type="button"
                                 onClick={() => setEnlarged(step)}
-                                className="rounded-lg overflow-hidden border border-[var(--color-neutral-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--color-olive)] transition"
+                                className="
+                  w-full h-full
+                  rounded-none overflow-hidden
+                  border-none focus:outline-none
+                  transition-shadow duration-200
+                  hover:shadow-lg
+                "
                             >
                                 <Image
                                     src={step.screenshot}
                                     alt={step.alt}
                                     width={600}
                                     height={360}
-                                    className="w-full h-auto"
+                                    className="w-full h-auto block"
                                 />
                             </button>
                         </div>
 
-                        <div className="space-y-2">
+                        {/* Text Pane */}
+                        <div className="
+              w-full md:w-1/2
+              bg-[var(--background)] text-[var(--foreground)]
+              dark:bg-[var(--color-neutral-dark)] dark:text-[var(--foreground)]
+              p-6 space-y-2
+            ">
                             <h3 className="text-xl font-semibold font-poppins text-[var(--color-olive)]">
                                 {step.title}
                             </h3>
-                            <p className="font-karla text-base text-[var(--foreground)]">
+                            <p className="font-karla text-base leading-relaxed">
                                 {step.description}
                             </p>
                         </div>
@@ -72,7 +87,12 @@ export default function HowItWorksSection({ steps }: HowItWorksSectionProps) {
                         onClick={() => setEnlarged(null)}
                     >
                         <motion.div
-                            className="relative max-w-[90%] max-h-[90%] bg-[var(--background)] p-4 rounded-lg shadow-lg"
+                            className="
+                relative max-w-[90%] max-h-[90%]
+                bg-[var(--background)] dark:bg-[var(--color-neutral-dark)]
+                p-4 rounded-lg shadow-lg
+                transition-colors duration-300
+              "
                             initial={{ scale: 0.95 }}
                             animate={{ scale: 1 }}
                             exit={{ scale: 0.95 }}
