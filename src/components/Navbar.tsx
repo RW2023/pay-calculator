@@ -20,7 +20,13 @@ export default function Navbar() {
         <nav
             role="navigation"
             aria-label="Main menu"
-            className="sticky top-0 z-50 shadow-sm border-b border-[rgba(0,0,0,0.1)] bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300"
+            className="
+        sticky top-0 z-50
+        shadow-sm
+        border-b border-neutral/10
+        bg-[var(--background)] text-[var(--foreground)]
+        transition-colors duration-300
+      "
         >
             <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-20">
                 <Link href="/" className="flex items-center gap-2">
@@ -47,14 +53,14 @@ export default function Navbar() {
                         </button>
                         <ul
                             tabIndex={0}
-                            className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-48"
+                            className="
+                dropdown-content menu p-2 shadow
+                bg-[var(--background)] text-[var(--foreground)]
+                rounded-box w-48
+              "
                         >
-                            <li>
-                                <Link href="/admin">Dashboard</Link>
-                            </li>
-                            <li>
-                                <Link href="/history">Entry History</Link>
-                            </li>
+                            <li><Link href="/admin">Dashboard</Link></li>
+                            <li><Link href="/history">Entry History</Link></li>
                         </ul>
                     </div>
 
@@ -85,12 +91,10 @@ export default function Navbar() {
                 initial={false}
                 animate={mobileOpen ? 'open' : 'closed'}
                 transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                className="lg:hidden overflow-hidden border-t"
-                style={{
-                    backgroundColor: 'var(--background)',
-                    color: 'var(--foreground)',
-                    borderColor: 'rgba(0,0,0,0.1)',
-                }}
+                className="
+          lg:hidden overflow-hidden border-t border-neutral/10
+          bg-[var(--background)] text-[var(--foreground)]
+        "
                 role="menu"
                 aria-hidden={!mobileOpen}
             >
@@ -108,19 +112,19 @@ export default function Navbar() {
                     ))}
 
                     {/* Admin Section */}
-                    <div className="pt-4 border-t space-y-2">
+                    <div className="pt-4 border-t border-neutral/10 space-y-2">
                         <span className="font-semibold">Admin</span>
                         <Link
                             href="/admin"
                             onClick={() => setMobileOpen(false)}
-                            className="block ml-4 hover:underline"
+                            className="block ml-4 hover:underline transition"
                         >
                             Dashboard
                         </Link>
                         <Link
                             href="/admin/history"
                             onClick={() => setMobileOpen(false)}
-                            className="block ml-4 hover:underline"
+                            className="block ml-4 hover:underline transition"
                         >
                             Entry History
                         </Link>
