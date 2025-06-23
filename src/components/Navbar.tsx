@@ -30,12 +30,12 @@ export default function Navbar() {
         >
             <div className="max-w-7xl mx-auto h-20 px-4 flex items-center justify-between">
                 {/* Brand */}
-                <Link href="/" className="flex items-center gap-2 group">
-                    <Logo size={44} />
-                    <span className="font-bold text-xl group-hover:opacity-80 transition-opacity">
-                        PayCalc
-                    </span>
+                <Link href="/" className="flex items-center gap-2">
+                    {/* now Logo will inherit this red color */}
+                    <Logo size={44} className="text-red-500" />
+                    <span className="font-bold text-xl">PayCalc</span>
                 </Link>
+
 
                 {/* Desktop links */}
                 <ul className="hidden lg:flex items-center gap-6">
