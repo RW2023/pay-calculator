@@ -65,7 +65,7 @@ export default function Navbar() {
               "
                         >
                             <li><Link href="/admin">Dashboard</Link></li>
-                            <li><Link href="/history">Entry History</Link></li>
+                            <li><Link href="/admin/history">Entry History</Link></li>
                         </ul>
                     </li>
 
@@ -120,7 +120,7 @@ export default function Navbar() {
                         <Link href="/admin" onClick={() => setMobileOpen(false)} className="block ml-4 hover:text-[var(--color-teal)]">
                             Dashboard
                         </Link>
-                        <Link href="/history" onClick={() => setMobileOpen(false)} className="block ml-4 hover:text-[var(--color-teal)]">
+                        <Link href="/admin/history" onClick={() => setMobileOpen(false)} className="block ml-4 hover:text-[var(--color-teal)]">
                             Entry History
                         </Link>
                     </div>
