@@ -67,7 +67,7 @@ export default function WeeklyPayForm({ onSubmit, initialValues }: WeeklyPayForm
                 e.preventDefault();
                 onSubmit({ days, hasPension, hasUnionDues });
             }}
-            className="bg-[var(--background)] text-[var(--foreground)] rounded-2xl shadow p-4 sm:p-6 flex flex-col gap-6 transition-colors duration-300"
+            className="bg-[var(--background)] text-[var(--foreground)] rounded-2xl shadow p-4 sm:p-6 flex flex-col gap-6 transition-colors duration-300 min-h-screen"
             aria-label="Weekly Pay Input Form"
             autoComplete="off"
         >
