@@ -1,4 +1,3 @@
-// components/EntryHistory.tsx
 'use client';
 
 import Link from 'next/link';
@@ -21,7 +20,7 @@ interface Entry {
     days: DayEntry[];
     hasPension: boolean;
     hasUnionDues: boolean;
-    createdAt: string; // ISO timestamp
+    createdAt: string;
 }
 
 export default function EntryHistory() {
@@ -67,7 +66,7 @@ export default function EntryHistory() {
 
     if (loading) {
         return (
-            <p role="status" aria-live="polite" className="text-[var(--foreground)]">
+            <p role='status' aria-live='polite' className='text-[var(--foreground)]'>
                 Loading history…
             </p>
         );
@@ -75,21 +74,21 @@ export default function EntryHistory() {
 
     if (entries.length === 0) {
         return (
-            <p role="status" aria-live="polite" className="text-[var(--foreground)] opacity-70">
+            <p role='status' aria-live='polite' className='text-[var(--foreground)] opacity-70'>
                 No saved entries yet.
             </p>
         );
     }
 
     return (
-        <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-[var(--foreground)]">Saved Pay Weeks</h2>
+        <div className='space-y-4'>
+            <h2 className='text-xl font-semibold text-[var(--foreground)]'>Saved Pay Weeks</h2>
             {error && (
-                <p role="alert" className="text-[var(--foreground)] opacity-70">
+                <p role='alert' className='text-[var(--foreground)] opacity-70'>
                     Error: {error}
                 </p>
             )}
-            <ul className="space-y-3">
+            <ul className='space-y-3'>
                 {entries.map((e) => {
                     const rawId = e._id;
                     const id = typeof rawId === 'string' ? rawId : rawId.toString();
@@ -98,38 +97,29 @@ export default function EntryHistory() {
                     const time = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
                     return (
-                        <li key={id} className="flex items-start justify-between">
+                        <li key={id} className='flex items-start space-x-2'>
                             <Link
                                 href={`/admin/history/${id}`}
                                 aria-label={`View saved week from ${date} ${time}`}
-                                className="
-                  block flex-1 p-4 rounded-lg shadow border
-                  bg-[var(--background)] text-[var(--foreground)]
-                  border-[var(--color-neutral)] dark:border-[var(--color-neutral)]/40
-                  dark:bg-[var(--color-neutral-dark)] dark:text-[var(--foreground)]
-                  hover:shadow-md hover:border-[var(--color-teal)]
-                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-teal)]
-                  transition-all duration-200
-                "
+                                className='block p-4 rounded-lg shadow border bg-[var(--background)] text-[var(--foreground)] border-[var(--color-neutral)] dark:border-[var(--color-neutral)]/40 dark:bg-[var(--color-neutral-dark)] dark:text-[var(--foreground)] hover:shadow-md hover:border-[var(--color-teal)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-teal)] transition-all duration-200'
                             >
-                                <div className="flex justify-between items-center">
-                                    <span className="font-semibold">{`${date} ${time}`}</span>
-                                    <span className="text-sm opacity-70">
+                                <div className='flex justify-between items-center'>
+                                    <span className='font-semibold'>{`${date} ${time}`}</span>
+                                    <span className='text-sm opacity-70'>
                                         {e.days.length} day{e.days.length > 1 ? 's' : ''}
                                     </span>
                                 </div>
-                                <p className="mt-1 text-sm opacity-70">
-                                    Pension: {e.hasPension ? 'Yes' : 'No'}, Union Dues:{' '}
-                                    {e.hasUnionDues ? 'Yes' : 'No'}
+                                <p className='mt-1 text-sm opacity-70'>
+                                    Pension: {e.hasPension ? 'Yes' : 'No'}, Union Dues: {e.hasUnionDues ? 'Yes' : 'No'}
                                 </p>
                             </Link>
                             <button
                                 onClick={() => handleDelete(id)}
                                 disabled={deletingId === id}
                                 aria-label={`Delete entry from ${date} ${time}`}
-                                className="btn btn-sm btn-outline btn-error ml-2"
+                                className='btn btn-sm btn-outline btn-error'
                             >
-                                <Trash2 className="w-4 h-4" />
+                                <Trash2 className='w-4 h-4' />
                             </button>
                         </li>
                     );
