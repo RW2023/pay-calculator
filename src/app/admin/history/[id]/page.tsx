@@ -6,6 +6,7 @@ import { calculateWeeklyPay } from '@/lib/payUtils';
 import type { WeeklyPayInput, DayEntry } from '@/lib/payUtils';
 import ResultsDisplay from '@/components/ResultsDisplay';
 import Link from 'next/link';
+import BackButton from '@/components/BackButton';
 
 const DAYS = [
     'Monday',
@@ -49,12 +50,7 @@ export default async function EntryDetailPage({
                     Week Details
                 </h1>
                 <div className="space-x-2">
-                    <Link
-                        href="/history"
-                        className="btn btn-sm m-1 border border-[var(--color-teal)] text-[var(--color-teal)] bg-transparent hover:bg-[var(--color-neutral)]"
-                    >
-                        Back
-                    </Link>
+              <BackButton />
                     <Link
                         href={`/pay?editId=${id}`}
                         className="btn btn-sm m-1 bg-[var(--color-teal)] text-white hover:opacity-90"
