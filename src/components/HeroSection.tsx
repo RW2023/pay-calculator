@@ -1,5 +1,6 @@
-import Link from 'next/link';
-import { Logo } from './Logo';
+ import { Logo } from './Logo';
+import NavButton from './NavButton';
+
 
 export default function HeroSection() {
     return (
@@ -24,16 +25,7 @@ export default function HeroSection() {
                 </p>
 
                 {/* CTA */}
-                <Link
-                    href="/pay"
-                    className="
-    inline-block px-8 py-3 font-semibold rounded-md
-    shadow-md transition-shadow hover:shadow-lg
-    bg-[var(--color-accent)] text-[var(--background)]
-  "
-                >
-                    Get Started
-                </Link>
+              <NavButton title='Get Started' href='/pay' />
 
             </div>
         </section>
