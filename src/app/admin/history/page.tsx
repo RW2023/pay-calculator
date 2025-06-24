@@ -1,4 +1,4 @@
-// app/history/page.tsx
+// app/admin/history/page.tsx
 import EntryHistory from '@/components/EntryHistory';
 import Link from 'next/link';
 import type { ReactElement } from 'react';
@@ -14,7 +14,9 @@ export default function HistoryPage(): ReactElement {
       "
         >
             <div className="flex justify-between items-center">
-                <h1 className="text-3xl sm:text-4xl font-extrabold font-poppins">History</h1>
+                <h1 className="text-3xl sm:text-4xl font-extrabold font-poppins">
+                    History
+                </h1>
 
                 <Link
                     href="/pay"
@@ -33,7 +35,6 @@ export default function HistoryPage(): ReactElement {
                 </Link>
             </div>
 
-            {/* list */}
             <EntryHistory />
         </main>
     );

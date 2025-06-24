@@ -1,31 +1,35 @@
 // app/history/[id]/page.tsx
-import { notFound } from "next/navigation";
-import { ObjectId } from "mongodb";
-import { getDb } from "@/lib/mongodb";
-import { calculateWeeklyPay } from "@/lib/payUtils";
-import type { WeeklyPayInput, DayEntry } from "@/lib/payUtils";
-import ResultsDisplay from "@/components/ResultsDisplay";
-import Link from "next/link";
+import { notFound } from 'next/navigation';
+import { ObjectId } from 'mongodb';
+import { getDb } from '@/lib/mongodb';
+import { calculateWeeklyPay } from '@/lib/payUtils';
+import type { WeeklyPayInput, DayEntry } from '@/lib/payUtils';
+import ResultsDisplay from '@/components/ResultsDisplay';
+import Link from 'next/link';
 
 const DAYS = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
 ];
 
-export default async function EntryDetailPage({ params }: { params: { id: string } }) {
+export default async function EntryDetailPage({
+    params,
+}: {
+    params: { id: string };
+}) {
     const { id } = params;
 
     let raw;
     try {
         const db = await getDb();
-        raw = await db.collection("shiftEntries").findOne({ _id: new ObjectId(id) });
+        raw = await db.collection('shiftEntries').findOne({ _id: new ObjectId(id) });
     } catch (err) {
-        console.error("Error fetching entry:", err);
+        console.error('Error fetching entry:', err);
         return notFound();
     }
 
@@ -41,7 +45,9 @@ export default async function EntryDetailPage({ params }: { params: { id: string
     return (
         <main className="min-h-screen max-w-2xl mx-auto px-4 py-10 space-y-8 text-[var(--foreground)]">
             <div className="flex justify-between items-center">
-                <h1 className="text-3xl sm:text-4xl font-extrabold font-poppins">Week Details</h1>
+                <h1 className="text-3xl sm:text-4xl font-extrabold font-poppins">
+                    Week Details
+                </h1>
                 <div className="space-x-2">
                     <Link
                         href="/history"
@@ -63,12 +69,20 @@ export default async function EntryDetailPage({ params }: { params: { id: string
             </p>
 
             <section className="bg-[var(--color-neutral)] dark:bg-[var(--color-neutral-dark)] rounded-lg shadow p-6">
-                <h2 className="text-lg font-semibold text-[var(--foreground)] mb-2">Daily Entries</h2>
+                <h2 className="text-lg font-semibold text-[var(--foreground)] mb-2">
+                    Daily Entries
+                </h2>
                 <div className="overflow-x-auto">
                     <table className="table w-full text-[var(--foreground)]">
                         <thead>
                             <tr>
-                                <th>Day</th><th>Scheduled</th><th>Actual</th><th>Break</th><th>Holiday</th><th>BUMP</th><th>Lieu Used</th>
+                                <th>Day</th>
+                                <th>Scheduled</th>
+                                <th>Actual</th>
+                                <th>Break</th>
+                                <th>Holiday</th>
+                                <th>BUMP</th>
+                                <th>Lieu Used</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -77,11 +91,15 @@ export default async function EntryDetailPage({ params }: { params: { id: string
                                 return (
                                     <tr key={idx}>
                                         <td>{label}</td>
-                                        <td>{d.scheduledStart}–{d.scheduledEnd}</td>
-                                        <td>{d.actualStart || "--:--"}–{d.actualEnd || "--:--"}</td>
+                                        <td>
+                                            {d.scheduledStart}–{d.scheduledEnd}
+                                        </td>
+                                        <td>
+                                            {d.actualStart || '--:--'}–{d.actualEnd || '--:--'}
+                                        </td>
                                         <td>{d.breakMinutes} min</td>
-                                        <td>{d.isHoliday ? "Yes" : "No"}</td>
-                                        <td>{d.isBump ? "Yes" : "No"}</td>
+                                        <td>{d.isHoliday ? 'Yes' : 'No'}</td>
+                                        <td>{d.isBump ? 'Yes' : 'No'}</td>
                                         <td>{d.lieuHoursUsed} h</td>
                                     </tr>
                                 );

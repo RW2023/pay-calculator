@@ -16,7 +16,7 @@ interface DayEntry {
 }
 
 interface Entry {
-    _id: string;
+    _id: { toString(): string } | string;
     days: DayEntry[];
     hasPension: boolean;
     hasUnionDues: boolean;
@@ -28,7 +28,6 @@ export default function EntryHistory() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    /* ── fetch last 10 entries ─────────────────────────────── */
     useEffect(() => {
         fetch('/api/entries?limit=10')
             .then(async (res) => {
@@ -40,43 +39,45 @@ export default function EntryHistory() {
             .finally(() => setLoading(false));
     }, []);
 
-    /* ── status outputs ─────────────────────────────────────── */
-    if (loading)
+    if (loading) {
         return (
             <p role="status" aria-live="polite" className="text-[var(--foreground)]">
                 Loading history…
             </p>
         );
+    }
 
-    if (error)
+    if (error) {
         return (
             <p role="alert" className="text-[var(--foreground)] opacity-70">
                 Error: {error}
             </p>
         );
+    }
 
-    if (entries.length === 0)
+    if (entries.length === 0) {
         return (
             <p role="status" aria-live="polite" className="text-[var(--foreground)] opacity-70">
                 No saved entries yet.
             </p>
         );
+    }
 
-    /* ── list ──────────────────────────────────────────────── */
     return (
         <div className="space-y-4">
             <h2 className="text-xl font-semibold">Saved Pay Weeks</h2>
-
             <ul className="space-y-3">
                 {entries.map((e) => {
+                    const rawId = e._id;
+                    const id = typeof rawId === 'string' ? rawId : rawId.toString();
                     const d = new Date(e.createdAt);
                     const date = d.toLocaleDateString();
                     const time = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
                     return (
-                        <li key={e._id}>
+                        <li key={id}>
                             <Link
-                                href={`/history/${e._id}`}
+                                href={`/admin/history/${id}`}
                                 aria-label={`View saved week from ${date} ${time}`}
                                 className="
                   block p-4 rounded-lg shadow border
@@ -94,7 +95,6 @@ export default function EntryHistory() {
                                         {e.days.length} day{e.days.length > 1 ? 's' : ''}
                                     </span>
                                 </div>
-
                                 <p className="mt-1 text-sm opacity-70">
                                     Pension: {e.hasPension ? 'Yes' : 'No'}, Union Dues:{' '}
                                     {e.hasUnionDues ? 'Yes' : 'No'}
