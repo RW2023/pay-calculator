@@ -3,6 +3,7 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { Trash2 } from 'lucide-react';
 
 interface DayEntry {
     scheduledStart: string;
@@ -26,6 +27,7 @@ interface Entry {
 export default function EntryHistory() {
     const [entries, setEntries] = useState<Entry[]>([]);
     const [loading, setLoading] = useState(true);
+    const [deletingId, setDeletingId] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -39,18 +41,34 @@ export default function EntryHistory() {
             .finally(() => setLoading(false));
     }, []);
 
+    const handleDelete = async (id: string) => {
+        if (!confirm('Are you sure you want to delete this entry?')) return;
+        setDeletingId(id);
+        try {
+            const res = await fetch(`/api/entries?id=${id}`, { method: 'DELETE' });
+            if (!res.ok) throw new Error(await res.text());
+            setEntries((prev) =>
+                prev.filter((e) => {
+                    const raw = e._id;
+                    const eid = typeof raw === 'string' ? raw : raw.toString();
+                    return eid !== id;
+                })
+            );
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError('An unknown error occurred.');
+            }
+        } finally {
+            setDeletingId(null);
+        }
+    };
+
     if (loading) {
         return (
             <p role="status" aria-live="polite" className="text-[var(--foreground)]">
                 Loading history…
-            </p>
-        );
-    }
-
-    if (error) {
-        return (
-            <p role="alert" className="text-[var(--foreground)] opacity-70">
-                Error: {error}
             </p>
         );
     }
@@ -65,22 +83,27 @@ export default function EntryHistory() {
 
     return (
         <div className="space-y-4">
-            <h2 className="text-xl font-semibold">Saved Pay Weeks</h2>
+            <h2 className="text-xl font-semibold text-[var(--foreground)]">Saved Pay Weeks</h2>
+            {error && (
+                <p role="alert" className="text-[var(--foreground)] opacity-70">
+                    Error: {error}
+                </p>
+            )}
             <ul className="space-y-3">
                 {entries.map((e) => {
                     const rawId = e._id;
                     const id = typeof rawId === 'string' ? rawId : rawId.toString();
-                    const d = new Date(e.createdAt);
-                    const date = d.toLocaleDateString();
-                    const time = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    const dateObj = new Date(e.createdAt);
+                    const date = dateObj.toLocaleDateString();
+                    const time = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
                     return (
-                        <li key={id}>
+                        <li key={id} className="flex items-start justify-between">
                             <Link
                                 href={`/admin/history/${id}`}
                                 aria-label={`View saved week from ${date} ${time}`}
                                 className="
-                  block p-4 rounded-lg shadow border
+                  block flex-1 p-4 rounded-lg shadow border
                   bg-[var(--background)] text-[var(--foreground)]
                   border-[var(--color-neutral)] dark:border-[var(--color-neutral)]/40
                   dark:bg-[var(--color-neutral-dark)] dark:text-[var(--foreground)]
@@ -100,6 +123,14 @@ export default function EntryHistory() {
                                     {e.hasUnionDues ? 'Yes' : 'No'}
                                 </p>
                             </Link>
+                            <button
+                                onClick={() => handleDelete(id)}
+                                disabled={deletingId === id}
+                                aria-label={`Delete entry from ${date} ${time}`}
+                                className="btn btn-sm btn-outline btn-error ml-2"
+                            >
+                                <Trash2 className="w-4 h-4" />
+                            </button>
                         </li>
                     );
                 })}
