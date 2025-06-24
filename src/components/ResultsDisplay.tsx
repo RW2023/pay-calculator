@@ -67,10 +67,10 @@ const ResultsDisplay = forwardRef<HTMLDivElement, ResultsDisplayProps>(
         /* ─────────────  Deductions rows  ───────────── */
         const deductionRows: DeductionRow[] = [
             { label: 'Tax', value: federalTax, colorClass: 'text-red-500' },
-            { label: 'EI', value: ei, colorClass: 'text-blue-500' },
-            { label: 'CPP', value: cpp, colorClass: 'text-purple-500' },
-            { label: 'Pension', value: pensionDeducted, colorClass: 'text-neutral-dark' },
-            { label: 'Union Dues', value: unionDuesDeducted, colorClass: 'text-accent' },
+            { label: 'EI', value: ei, colorClass: 'text-red-500' },
+            { label: 'CPP', value: cpp, colorClass: 'text-red-500' },
+            { label: 'Pension', value: pensionDeducted, colorClass: 'text-red-500' },
+            { label: 'Union Dues', value: unionDuesDeducted, colorClass: 'text-red-500' },
         ].filter((r) => r.value > 0.009);
 
         return (
