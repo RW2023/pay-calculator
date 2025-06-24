@@ -1,4 +1,3 @@
-// components/WeeklyPayForm.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -57,7 +56,6 @@ export default function WeeklyPayForm({ onSubmit, initialValues }: WeeklyPayForm
             aria-label={aria}
             value={safeTime(value)}
             onChange={e => onChange(e.target.value)}
-            required
         />
     );
 
