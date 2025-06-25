@@ -13,6 +13,7 @@
     "@prisma/client": "^6.10.1",
     "bcrypt": "^5.1.1",
     "daisyui": "^5.0.43",
+    "date-fns": "^4.1.0",
     "framer-motion": "^12.18.1",
     "html2pdf.js": "^0.10.3",
     "lucide-react": "^0.518.0",
