@@ -83,10 +83,10 @@ const ResultsDisplay = forwardRef<HTMLDivElement, ResultsDisplayProps>(
                             key={label}
                             className={`card shadow rounded-xl p-4 border-l-4 ${borderClass} bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300`}
                         >
-                            <div className={`flex items-center gap-2 font-semibold text-lg ${colorClass}`}>
+                            <div className={`flex flex-wrap items-center gap-2 font-semibold text-lg ${colorClass}`}>
                                 {label}
                                 {label === 'Holiday Pay' && lieuDaysAccrued > 0 && (
-                                    <span className="badge badge-warning text-xs ml-2">
+                                    <span className="inline-flex items-center badge badge-warning badge-sm">
                                         <CheckCircle2 className="w-3 h-3 mr-1" />
                                         Lieu Day{lieuDaysAccrued > 1 ? 's' : ''} Accrued ({lieuDaysAccrued})
                                     </span>
