@@ -1,41 +1,36 @@
 // lib/auth.ts
-import NextAuth, { NextAuthOptions } from 'next-auth'
-import CredentialsProvider from 'next-auth/providers/credentials'
-import { getDb } from './mongodb'
-import { compare } from 'bcrypt'
+import type { NextAuthOptions } from "next-auth"
+import CredentialsProvider from "next-auth/providers/credentials"
 
 export const authOptions: NextAuthOptions = {
-  session: { strategy: 'jwt' },
-  pages: { signIn: '/login' },
+  session: { strategy: "jwt" },
+  pages: { signIn: "/login" },
   providers: [
     CredentialsProvider({
-      name: 'Username & Password',
+      name: "Admin Credentials",
       credentials: {
-        username: { label: 'Username', type: 'text', placeholder: 'jsmith' },
-        password: { label: 'Password', type: 'password' },
+        username: { label: "Username", type: "text", placeholder: "admin" },
+        password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
-        if (!credentials) return null
-        const db = await getDb()
-        const user = await db.collection('users').findOne({ username: credentials.username })
-        if (!user) return null
-        const isValid = await compare(credentials.password, user.passwordHash)
-        if (!isValid) return null
-        return { 
-          id: user._id.toString(), 
-          name: user.username, 
-          role: user.role || 'user' 
+      async authorize(creds) {
+        if (
+          creds?.username === process.env.ADMIN_USER &&
+          creds?.password === process.env.ADMIN_PASSWORD
+        ) {
+          // return a user object—role goes onto the JWT
+          return { id: "1", name: creds!.username, role: "admin" }
         }
+        return null
       },
     }),
   ],
   callbacks: {
     async jwt({ token, user }) {
-      if (user) token.role = (user as any).role
+      if (user?.role) token.role = user.role
       return token
     },
     async session({ session, token }) {
-      if (session.user) (session.user as any).role = token.role
+      if (session.user && token.role) session.user.role = token.role
       return session
     },
   },

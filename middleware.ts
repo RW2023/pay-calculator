@@ -1,16 +1,16 @@
 // middleware.ts
-import { withAuth } from 'next-auth/middleware'
-import { NextResponse } from 'next/server'
+import { withAuth } from "next-auth/middleware"
+import { NextResponse } from "next/server"
 
 export default withAuth(
   () => NextResponse.next(),
   {
     callbacks: {
-      authorized: ({ token }) => token?.role === 'admin'
-    }
+      authorized: ({ token }) => token?.role === "admin",
+    },
   }
 )
 
 export const config = {
-  matcher: ['/admin/:path*', '/api/entries/:path*']
+  matcher: ["/admin/:path*", "/api/entries/:path*"],
 }

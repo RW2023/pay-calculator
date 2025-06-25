@@ -15,7 +15,9 @@ type EntryPayload = {
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
-    if (!session || (session.user as any).role !== 'admin') {
+    type SessionUser = { role?: string };
+    const user = session?.user as SessionUser | undefined;
+    if (!session || user?.role !== 'admin') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
     // 1. Parse & validate body
@@ -49,7 +51,9 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
-    if (!session || (session.user as any).role !== 'admin') {
+    type SessionUser = { role?: string };
+    const user = session?.user as SessionUser | undefined;
+    if (!session || user?.role !== 'admin') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
     // 1. Read & sanitize query
