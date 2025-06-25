@@ -44,7 +44,10 @@ export default function EntryHistory() {
         if (!confirm('Are you sure you want to delete this entry?')) return;
         setDeletingId(id);
         try {
-            const res = await fetch(`/api/entries?id=${id}`, { method: 'DELETE' });
+            const res = await fetch(`/api/entries/${id}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+            });
             if (!res.ok) throw new Error(await res.text());
             setEntries((prev) =>
                 prev.filter((e) => {

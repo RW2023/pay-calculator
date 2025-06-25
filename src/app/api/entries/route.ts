@@ -58,7 +58,12 @@ export async function GET(request: NextRequest) {
       .limit(limit)
       .toArray();
 
-    return NextResponse.json(entries);
+    const mapped = entries.map((e) => ({
+      ...e,
+      _id: e._id.toString(),
+    }));
+
+    return NextResponse.json(mapped);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Unknown error";
     console.error("GET /api/entries error:", message);
