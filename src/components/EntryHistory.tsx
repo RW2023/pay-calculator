@@ -122,7 +122,7 @@ export default function EntryHistory() {
                                 disabled={deletingId === id}
                                 aria-label={`Delete entry from ${date} ${time}`}
                                 className="
-                  absolute top-3 right-3 p-2 rounded-full
+                  absolute bottom-3 right-3 p-2 rounded-full
                   bg-[var(--background)] border border-[var(--color-neutral)]
                   dark:bg-[var(--color-neutral-dark)] dark:border-[var(--color-neutral)]/40
                   hover:bg-[var(--color-teal)] hover:text-white
