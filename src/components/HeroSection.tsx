@@ -1,5 +1,5 @@
  import { Logo } from './Logo';
-import NavButton from './NavButton';
+import HomeButton from './HomeButton';
 
 
 export default function HeroSection() {
@@ -25,7 +25,7 @@ export default function HeroSection() {
                 </p>
 
                 {/* CTA */}
-              <NavButton title='Get Started' href='/pay' />
+              <HomeButton title='Get Started' href='/pay' />
 
             </div>
         </section>

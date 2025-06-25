@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-interface NavButtonProps {
+interface HomeButtonProps {
     title?: string;
     className?: string;
     href?: string;
@@ -15,11 +15,11 @@ interface NavButtonProps {
  * it’ll be merged *after* the defaults so you can override
  * anything you need.
  */
-export default function NavButton({
+export default function HomeButton({
     title = "Get Started",
     className = "",
     href = "#",
-}: NavButtonProps) {
+}: HomeButtonProps) {
     return (
         <Link href={href} className="inline-block group">
             <button

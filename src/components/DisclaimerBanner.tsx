@@ -1,6 +1,8 @@
 // components/DisclaimerBanner.tsx
 
-import NavButton from '@/components/NavButton';
+import HomeButton from "./HomeButton";
+
+
 export default function DisclaimerBanner() {
     return (
         <section className="
@@ -16,7 +18,7 @@ export default function DisclaimerBanner() {
                 track the various variables—this software offers a streamlined alternative. It should not be used as a
                 source of truth for wages; it is simply a revenue forecasting tool.
             </p>
-            <NavButton
+            <HomeButton
                 href="/about"
                 title="How to Use"
                 className="mt-4 px-4 py-2 text-sm"
