@@ -33,6 +33,7 @@
     "@testing-library/jest-dom": "^6",
     "@testing-library/react": "^15.0.7",
     "@testing-library/user-event": "^14",
+    "@types/bcrypt": "^5.0.2",
     "@types/jest": "^29",
     "@types/node": "^20",
     "@types/react": "^18.0.37",

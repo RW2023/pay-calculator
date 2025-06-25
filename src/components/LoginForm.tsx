@@ -17,11 +17,62 @@ else window.location.href = '/admin'
 }
 
 return (
-<form onSubmit={handleSubmit} className='space-y-4 max-w-sm mx-auto'>
-<input type='text' name='username' placeholder='Username' className='input input-bordered w-full' required />
-<input type='password' name='password' placeholder='Password' className='input input-bordered w-full' required />
-{error && <p className='text-red-500'>{error}</p>}
-<button type='submit' className='btn btn-primary w-full'>Login</button>
-</form>
+    <div
+        className="min-h-screen flex items-center justify-center
+             bg-[var(--background)] text-[var(--foreground)]"
+    >
+        <div
+            className="card w-full max-w-md rounded-2xl shadow-lg
+               bg-[var(--neutral)] dark:bg-[var(--neutral-dark)]"
+        >
+            <div className="card-body space-y-6 p-6">
+                <h2 className="text-2xl font-semibold font-poppins text-center">
+                    Admin Login
+                </h2>
+
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <div>
+                        <label htmlFor="username" className="label">
+                            <span className="label-text font-karla">Username</span>
+                        </label>
+                        <input
+                            id="username"
+                            name="username"
+                            type="text"
+                            placeholder="jsmith"
+                            className="input input-bordered w-full"
+                            required
+                        />
+                    </div>
+
+                    <div>
+                        <label htmlFor="password" className="label">
+                            <span className="label-text font-karla">Password</span>
+                        </label>
+                        <input
+                            id="password"
+                            name="password"
+                            type="password"
+                            placeholder="••••••••"
+                            className="input input-bordered w-full"
+                            required
+                        />
+                    </div>
+
+                    {error && (
+                        <p className="text-sm text-red-500 font-karla">{error}</p>
+                    )}
+
+                    <button
+                        type="submit"
+                        className="btn btn-primary w-full font-poppins"
+                    >
+                        Login
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
 )
 }
