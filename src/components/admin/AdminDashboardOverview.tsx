@@ -1,6 +1,8 @@
 // components/admin/AdminDashboardOverview.tsx
+'use client'
+
 import React from 'react'
-import { startOfISOWeek, endOfISOWeek } from 'date-fns'
+import useSWR from 'swr'
 import AdminStatCard from './AdminStatCard'
 import {
     CalendarDays,
@@ -10,88 +12,37 @@ import {
     Zap,
 } from 'lucide-react'
 
-import { getDb } from '@/lib/mongodb'
-import {
-    calculateWeeklyPay,
-    type DayEntry,
-    type WeeklyPayInput,
-} from '@/lib/payUtils'
+const fetcher = (url: string) => fetch(url).then(res => res.json())
 
-export default async function AdminDashboardOverview() {
-    /* 1 ▸ Week bounds */
-    const today = new Date()
-    const weekStart = startOfISOWeek(today)
-    const weekEnd = endOfISOWeek(today)
+export default function AdminDashboardOverview() {
+    // 🔥 Note the new URL
+    const { data, error, mutate } = useSWR(
+        '/api/entries?summary=true',
+        fetcher,
+        { refreshInterval: 15000, revalidateOnFocus: true }
+    )
 
-    /* 2 ▸ Fetch this week’s document */
-    const db = await getDb()
-    const weekDoc = await db
-        .collection('shiftEntries')
-        .findOne({ createdAt: { $gte: weekStart, $lte: weekEnd } })
+    if (error) return <p className="text-red-500">Failed to load stats.</p>
+    if (!data) return <p>Loading dashboard…</p>
 
-    /* 3 ▸ Normalize all seven days */
-    const allDays: DayEntry[] = (weekDoc?.days ?? []).map((d: DayEntry) => ({
-        scheduledStart: d.scheduledStart,
-        scheduledEnd: d.scheduledEnd,
-        actualStart: d.actualStart || undefined,
-        actualEnd: d.actualEnd || undefined,
-        breakMinutes: d.breakMinutes,
-        isHoliday: d.isHoliday,
-        isBump: d.isBump,
-        lieuHoursUsed: d.lieuHoursUsed,
-    }))
-
-    /* 4 ▸ Only keep days with real punches */
-    const validDays = allDays.filter(d => d.actualStart && d.actualEnd)
-
-    /* 5 ▸ Build the payload for your calculator util */
-    const weeklyInput: WeeklyPayInput = {
-        days: validDays,
-        hasPension: weekDoc?.hasPension ?? true,
-        hasUnionDues: weekDoc?.hasUnionDues ?? true,
-    }
-
-    /* 6 ▸ Run the full calculation */
-    const { totals } = calculateWeeklyPay(weeklyInput)
-
-    /* 7 ▸ Map into your stats cards */
     const stats = [
-        {
-            label: 'Total Entries This Week',
-            value: validDays.length,
-            icon: <CalendarDays />,
-        },
-        {
-            label: 'Total Hours Logged',
-            value: `${totals.totalHours.toFixed(2)}h`,
-            icon: <Clock />,
-        },
-        {
-            label: 'Total Gross Pay',
-            value: `$${totals.grossPay.toFixed(2)}`,
-            icon: <DollarSign />,
-        },
-        {
-            label: 'Total Pension Contributions',
-            value: `$${totals.pensionDeducted.toFixed(2)}`,
-            icon: <Percent />,
-        },
-        {
-            label: 'Total Union Dues Collected',
-            value: `$${totals.unionDuesDeducted.toFixed(2)}`,
-            icon: <Percent />,
-        },
-        {
-            label: 'Overtime Pay This Week',
-            value: `$${totals.overtimePay.toFixed(2)}`,
-            icon: <Zap />,
-        },
+        { label: 'Total Entries This Week', value: data.totalEntries, icon: <CalendarDays /> },
+        { label: 'Total Hours Logged', value: `${data.totalHours.toFixed(2)}h`, icon: <Clock /> },
+        { label: 'Total Gross Pay', value: `$${data.grossPay.toFixed(2)}`, icon: <DollarSign /> },
+        { label: 'Total Pension Contributions', value: `$${data.pension.toFixed(2)}`, icon: <Percent /> },
+        { label: 'Total Union Dues Collected', value: `$${data.unionDues.toFixed(2)}`, icon: <Percent /> },
+        { label: 'Overtime Pay This Week', value: `$${data.overtimePay.toFixed(2)}`, icon: <Zap /> },
     ]
 
-    /* 8 ▸ Render */
     return (
         <section className="space-y-6">
-            <h2 className="text-2xl font-semibold">Dashboard Overview</h2>
+            <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-semibold">Dashboard Overview</h2>
+                <button onClick={() => mutate()} className="btn btn-sm btn-outline">
+                    Refresh
+                </button>
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {stats.map(({ label, value, icon }) => (
                     <AdminStatCard key={label} label={label} value={value} icon={icon} />
