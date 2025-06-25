@@ -109,9 +109,14 @@ export default function EntryHistory() {
                             >
                                 <div className="flex justify-between items-center">
                                     <span className="font-semibold">{`${date} ${time}`}</span>
-                                    <span className="text-sm opacity-70">
-                                        {e.days.length} day{e.days.length > 1 ? 's' : ''}
-                                    </span>
+                                    {(() => {
+                                        const realDays = e.days.filter(d => !!d.actualStart).length;
+                                        return (
+                                            <span className="text-sm opacity-70">
+                                                {realDays} day{realDays > 1 ? 's' : ''}
+                                            </span>
+                                        );
+                                    })()}
                                 </div>
                                 <p className="mt-2 text-sm opacity-70">
                                     Pension: {e.hasPension ? 'Yes' : 'No'}, Union Dues: {e.hasUnionDues ? 'Yes' : 'No'}

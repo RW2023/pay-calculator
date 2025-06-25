@@ -50,7 +50,7 @@ export default async function EntryDetailPage({
                     Week Details
                 </h1>
                 <div className="space-x-2">
-              <BackButton />
+                    <BackButton />
                     <Link
                         href={`/pay?editId=${id}`}
                         className="btn btn-sm m-1 bg-[var(--color-teal)] text-white hover:opacity-90"
@@ -82,24 +82,25 @@ export default async function EntryDetailPage({
                             </tr>
                         </thead>
                         <tbody>
-                            {(raw.days as DayEntry[]).map((d, idx) => {
-                                const label = DAYS[idx] ?? `Day ${idx + 1}`;
-                                return (
-                                    <tr key={idx}>
-                                        <td>{label}</td>
-                                        <td>
-                                            {d.scheduledStart}–{d.scheduledEnd}
-                                        </td>
-                                        <td>
-                                            {d.actualStart || '--:--'}–{d.actualEnd || '--:--'}
-                                        </td>
-                                        <td>{d.breakMinutes} min</td>
-                                        <td>{d.isHoliday ? 'Yes' : 'No'}</td>
-                                        <td>{d.isBump ? 'Yes' : 'No'}</td>
-                                        <td>{d.lieuHoursUsed} h</td>
-                                    </tr>
-                                );
-                            })}
+                            {(raw.days as DayEntry[])
+                                .map((d, idx) => ({ d, idx }))
+                                .filter(({ d }) => !!d.actualStart)      // only show days with actualStart
+                                .map(({ d, idx }) => {
+                                    const label = DAYS[idx] ?? `Day ${idx + 1}`;
+                                    return (
+                                        <tr key={idx}>
+                                            <td>{label}</td>
+                                            <td>{d.scheduledStart}–{d.scheduledEnd}</td>
+                                            <td>
+                                                {d.actualStart || '--:--'}–{d.actualEnd || '--:--'}
+                                            </td>
+                                            <td>{d.breakMinutes} min</td>
+                                            <td>{d.isHoliday ? 'Yes' : 'No'}</td>
+                                            <td>{d.isBump ? 'Yes' : 'No'}</td>
+                                            <td>{d.lieuHoursUsed} h</td>
+                                        </tr>
+                                    );
+                                })}
                         </tbody>
                     </table>
                 </div>
