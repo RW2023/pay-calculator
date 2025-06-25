@@ -40,3 +40,5 @@ export async function getDb(): Promise<Db> {
   // want to override the default database in the URI
   return client.db();
 }
+
+export { clientPromise };
