@@ -1,8 +1,10 @@
 // app/api/entries/route.ts
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-import { getDb } from "@/lib/mongodb";
-import type { DayEntry } from "@/lib/payUtils";
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+import { getDb } from '@/lib/mongodb'
+import type { DayEntry } from '@/lib/payUtils'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 type EntryPayload = {
   days: DayEntry[];
@@ -12,6 +14,10 @@ type EntryPayload = {
 
 export async function POST(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions)
+    if (!session || (session.user as any).role !== 'admin') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
     // 1. Parse & validate body
     const payload = (await request.json()) as Partial<EntryPayload>;
     if (
@@ -42,6 +48,10 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions)
+    if (!session || (session.user as any).role !== 'admin') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
     // 1. Read & sanitize query
     const limitParam = request.nextUrl.searchParams.get("limit");
     const limit = limitParam ? parseInt(limitParam, 10) : 20;

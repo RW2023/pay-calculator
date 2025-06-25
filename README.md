@@ -15,7 +15,7 @@ PayCalc is a web-based pay estimator built with Next.js and TypeScript. It helps
 - Edit saved entries or load them back into the calculator
 - Light/dark theme toggle and offline capable Progressive Web App
 - Print results or download a PDF pay stub
-- Basic-auth protected admin console
+- Secure admin console using NextAuth
 
 ## Requirements
 
@@ -28,8 +28,7 @@ Create a `.env.local` file and provide the following variables:
 
 ```env
 MONGODB_URI=mongodb://localhost:27017/paycalc
-ADMIN_USER=admin
-ADMIN_PASSWORD=secret
+NEXTAUTH_SECRET=changeme
 # Optional pay rates
 REGULAR_RATE=32.5
 PENSION_BIWEEKLY=103.79

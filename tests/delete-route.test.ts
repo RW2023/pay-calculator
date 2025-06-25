@@ -1,16 +1,18 @@
 /** @jest-environment node */
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { MongoClient, ObjectId } from 'mongodb'
-import { DELETE } from '@/app/api/entries/[id]/route'
 
 let mongo: MongoMemoryServer
 let client: MongoClient
+let DELETE: typeof import('@/app/api/entries/[id]/route').DELETE
 
 beforeAll(async () => {
   mongo = await MongoMemoryServer.create()
   process.env.MONGODB_URI = mongo.getUri()
   client = new MongoClient(process.env.MONGODB_URI as string)
   await client.connect()
+  const mod = await import('@/app/api/entries/[id]/route')
+  DELETE = mod.DELETE
 })
 
 afterAll(async () => {
