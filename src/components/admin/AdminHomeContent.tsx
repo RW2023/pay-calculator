@@ -1,7 +1,7 @@
 // components/admin/AdminHomeContent.tsx
 import React from 'react'
-import AdminDashboardOverview from './AdminDashboardOverview'
-import OvertimeTakeHomeEstimator from './OvertimeTakeHomeEstimator'
+import AdminDashboardOverview from '@/components/Admin/AdminDashboardOverview'
+import OvertimeTakeHomeEstimator from '@/components/Admin/OvertimeTakeHomeEstimator'
 
 export default function AdminHomeContent() {
     return (
