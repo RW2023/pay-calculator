@@ -1,7 +1,7 @@
 // components/admin/AdminHomeContent.tsx
 import React from 'react'
 import AdminDashboardOverview from './AdminDashboardOverview'
-import OvertimeWorthIt from '../OvertimeWorthIt'
+import OvertimeTakeHomeEstimator from '../OvertimeTakeHomeEstimator'
 
 export default function AdminHomeContent() {
     return (
@@ -10,7 +10,7 @@ export default function AdminHomeContent() {
             <p>Use the navigation above to manage entries, users, settings, etc.</p>
             <div>
                 <AdminDashboardOverview />
-                <OvertimeWorthIt />
+                <OvertimeTakeHomeEstimator />
             </div>
         </div>
     )
