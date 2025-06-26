@@ -1,6 +1,6 @@
 // src/app/pay/page.tsx
 import type { Metadata } from 'next';
-import PayCalculatorClient from '@/components/PayCalculatorClient';
+import PayCalculatorClient from '@/components/Calculator/PayCalculatorClient';
 
 export const dynamic = 'force-dynamic';
 

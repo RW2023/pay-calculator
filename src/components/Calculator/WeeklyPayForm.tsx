@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import type { DayEntry } from '@/lib/payUtils';
-import IconToggle from '@/components/IconToggle';
+import IconToggle from '@/components/ui/IconToggle';
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
 

@@ -1,8 +1,8 @@
 // app/page.tsx
-import HeroSection from '@/components/HeroSection';
-import FeaturesSection from '@/components/FeaturesSection';
-import HowItWorksSection from '@/components/HowItWorksSection';
-import DisclaimerBanner from '@/components/DisclaimerBanner';
+import HeroSection from '@/components/Hero/HeroSection';
+import FeaturesSection from '@/components/Hero/FeaturesSection';
+import HowItWorksSection from '@/components/Hero/HowItWorksSection';
+import DisclaimerBanner from '@/components/Hero/DisclaimerBanner';
 
 export default function HomePage() {
   return (

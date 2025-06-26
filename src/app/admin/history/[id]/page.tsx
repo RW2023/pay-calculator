@@ -4,9 +4,9 @@ import { ObjectId } from 'mongodb';
 import { getDb } from '@/lib/mongodb';
 import { calculateWeeklyPay } from '@/lib/payUtils';
 import type { WeeklyPayInput, DayEntry } from '@/lib/payUtils';
-import ResultsDisplay from '@/components/ResultsDisplay';
+import ResultsDisplay from '@/components/Calculator/ResultsDisplay';
 import Link from 'next/link';
-import BackButton from '@/components/BackButton';
+import BackButton from '@/components/ui/BackButton';
 
 const DAYS = [
     'Monday',

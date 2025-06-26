@@ -1,5 +1,5 @@
 // app/admin/history/page.tsx
-import EntryHistory from '@/components/EntryHistory';
+import EntryHistory from '@/components/admin/EntryHistory';
 import Link from 'next/link';
 import type { ReactElement } from 'react';
 

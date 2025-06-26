@@ -3,10 +3,10 @@
 
 import { useRef, useState, useTransition, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import WeeklyPayForm, { WeeklyPayInput } from '@/components/WeeklyPayForm';
+import WeeklyPayForm, { WeeklyPayInput } from '@/components/Calculator/WeeklyPayForm';
 import type { DayEntry, WeeklyPayResult } from '@/lib/payUtils';
-import ResultsDisplay from '@/components/ResultsDisplay';
-import PrintButton from '@/components/PrintButton';
+import ResultsDisplay from '@/components/Calculator/ResultsDisplay';
+import PrintButton from '@/components/ui/PrintButton';
 import { calculatePayAction } from '@/app/actions/calculatePay';
 
 const DEFAULT_BREAK_MINUTES = 30;
