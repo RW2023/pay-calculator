@@ -1,44 +1,55 @@
 // lib/mongodb.ts
-import { MongoClient, type MongoClientOptions, type Db } from "mongodb";
+import { MongoClient, type Db } from "mongodb";
 
+// ─── Validate env ──────────────────────────────────────────────────────────
 if (!process.env.MONGODB_URI) {
   throw new Error(
     "Please define the MONGODB_URI environment variable in .env.local"
   );
 }
 
-const uri: string = process.env.MONGODB_URI;
-const options: MongoClientOptions = {}; // you can add retryWrites, w, etc., here if needed
+const uri = process.env.MONGODB_URI;
 
-let client: MongoClient;
-let clientPromise: Promise<MongoClient>;
-
-declare global {
-  // Allows us to cache the client across module reloads in development
-  // so that we don’t open countless connections
-  // (this merges onto the NodeJS.Global interface)
-  var _mongoClientPromise: Promise<MongoClient>;
-}
-
-if (process.env.NODE_ENV === "development") {
-  if (!globalThis._mongoClientPromise) {
-    client = new MongoClient(uri, options);
-    globalThis._mongoClientPromise = client.connect();
+// ─── Determine target database name ───────────────────────────────────────
+// 1) MONGODB_DB env var (explicit override)
+// 2) The db name embedded in the URI path (…mongodb.net/<db>)
+// 3) Fallback to 'paycalc'
+const uriDb = (() => {
+  try {
+    const { pathname } = new URL(uri);
+    return pathname && pathname !== "/" ? pathname.slice(1) : undefined;
+  } catch {
+    return undefined;
   }
-  clientPromise = globalThis._mongoClientPromise;
-} else {
-  client = new MongoClient(uri, options);
-  clientPromise = client.connect();
+})();
+
+const dbName = process.env.MONGODB_DB ?? uriDb ?? "paycalc";
+
+// ─── Singleton MongoClient cache (dev & prod) ─────────────────────────────
+let cachedClient: MongoClient | null = null;
+let cachedPromise: Promise<MongoClient> | null = null;
+
+/**
+ * Get a connected `Db` instance for the configured database.
+ */
+export async function getDb(): Promise<Db> {
+  if (cachedClient) return cachedClient.db(dbName);
+
+  if (!cachedPromise) {
+    cachedPromise = new MongoClient(uri).connect();
+  }
+
+  cachedClient = await cachedPromise;
+  return cachedClient.db(dbName);
 }
 
 /**
- * Returns a connected `Db` instance
+ * Expose the underlying MongoClient promise if another module needs it.
  */
-export async function getDb(): Promise<Db> {
-  const client = await clientPromise;
-  // You can also call client.db("yourDbName") if you
-  // want to override the default database in the URI
-  return client.db();
-}
-
-export { clientPromise };
+export const clientPromise: Promise<MongoClient> = (async () => {
+  if (cachedClient) return cachedClient;
+  if (cachedPromise) return cachedPromise;
+  cachedPromise = new MongoClient(uri).connect();
+  cachedClient = await cachedPromise;
+  return cachedClient;
+})();
