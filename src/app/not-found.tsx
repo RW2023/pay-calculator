@@ -36,7 +36,7 @@ export default function NotFound() {
                     <Link href="/" passHref>
                         <button
                             className="btn flex items-center gap-2 bg-[var(--color-teal)] text-white hover:opacity-90"
-                            aria-label="Go to home page"
+                            aria-label="Go home"
                         >
                             <Home size={20} />
                             Home
