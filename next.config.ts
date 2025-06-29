@@ -1,4 +1,5 @@
 // next.config.ts
+import path from "path";
 import type { NextConfig } from "next";
 import withPWA from "next-pwa";
 
@@ -9,15 +10,18 @@ const pwaConfig = withPWA({
 
 /** @type {NextConfig} */
 const nextConfig: NextConfig = {
-  // Skip TS errors at build time so dynamic routes don't block deploys
-  typescript: {
-    ignoreBuildErrors: true,
+  // Skip TS/ESLint errors at build time
+  typescript: { ignoreBuildErrors: true },
+  eslint:     { ignoreDuringBuilds: true },
+
+  // add this block:
+  webpack(config) {
+    config.resolve.alias = {
+      ...(config.resolve.alias ?? {}),
+      "@": path.resolve(__dirname),          // "@/foo" → "<repo-root>/foo"
+    };
+    return config;
   },
-  // (Optional) Skip ESLint errors at build time
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  // Any other config options you already had…
 };
 
 export default pwaConfig(nextConfig);
